@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="225"
+                android:endColor="@color/app_background_end"
+                android:startColor="@color/app_background_start" />
+            <padding android:bottom="1dp" />
+        </shape>
+    </item>
+
+    <item>
+        <bitmap
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:src="@mipmap/e_kart" />
+    </item>
+
+</layer-list>
