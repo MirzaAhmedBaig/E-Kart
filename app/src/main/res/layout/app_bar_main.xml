@@ -11,10 +11,10 @@
             android:theme="@style/AppTheme.NoActionBar.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
+                android:background="@color/app_background_end"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>

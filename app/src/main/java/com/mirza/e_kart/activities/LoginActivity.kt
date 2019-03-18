@@ -11,8 +11,13 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import com.mirza.e_kart.R
+import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
+import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.extensions.isEmailValid
+import com.mirza.e_kart.extensions.isNetworkAvailable
+import com.mirza.e_kart.networks.models.LoginModel
+import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -23,6 +28,14 @@ class LoginActivity : AppCompatActivity() {
     private val TAG = LoginActivity::class.java.simpleName
     private val background by lazy {
         findViewById<View>(R.id.login_layout)
+    }
+
+    private val appPreferences by lazy {
+        AppPreferences(this)
+    }
+
+    private val progressDialog by lazy {
+        LoadingAlertDialog()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,5 +102,81 @@ class LoginActivity : AppCompatActivity() {
         forgotPasswordDialog.show(supportFragmentManager, "hi_how")
     }
 
+    private fun hideAlert() {
+        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
+            progressDialog.dismiss()
+        }
+    }
 
+    private fun completedLogin() {
+        appPreferences.setLoggedIn(true)
+        appPreferences.setUserId("")
+        appPreferences.setJWTToken("")
+    }
+
+    private fun performAuthentication() {
+        val loginModel =
+            LoginModel(u_email.text.toString(), u_password.text.toString())
+        if (!isNetworkAvailable()) {
+            val dialog = CustomAlertDialog().apply {
+                arguments = Bundle().apply {
+                    setMessage("Please check your internet.")
+                    setIcon(R.drawable.ic_warning)
+                }
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
+            return
+        }
+        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        /*val call = ClientAPI.clientAPI.doLogin(loginModel)
+        Log.d(TAG, "Request URL : ${call.request().url()}")
+        call.enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                hideAlert()
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse == null) {
+                        showToast("Error in logging in!")
+                        return
+                    }
+                    completedLogin(loginResponse)
+                } else {
+                    when {
+                        response.code() == 400 -> {
+                            u_password.requestFocus()
+                            u_password.error = "Invalid password"
+                        }
+                        response.code() == 404 -> {
+                            val jObjError = JSONObject(response.errorBody()!!.string())
+                            u_email.requestFocus()
+                            u_email.error = jObjError.getString("message")
+                        }
+                        response.code() == 500 -> {
+                            val jObjError = JSONObject(response.errorBody()!!.string())
+                            u_email.requestFocus()
+                            u_email.error = jObjError.getString("message")
+                        }
+                        else -> {
+                            try {
+                                val jObjError = JSONObject(response.errorBody()!!.string())
+                                showToast(jObjError.getString("message"))
+                            } catch (e: Exception) {
+                                Log.d(TAG, "Error" + e.message)
+                                showToast("ServerError!")
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }
+
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                hideAlert()
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })*/
+    }
 }
