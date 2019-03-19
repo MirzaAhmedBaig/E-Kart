@@ -5,8 +5,10 @@
     <dimen name="normal_title_text">25sp</dimen>
 
     <dimen name="product_title_text">22sp</dimen>
+    <dimen name="product_sub_title_text">20sp</dimen>
     <dimen name="title_text">30sp</dimen>
     <dimen name="text_size">18sp</dimen>
+    <dimen name="small_text_size">15sp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_25">25dp</dimen>
 

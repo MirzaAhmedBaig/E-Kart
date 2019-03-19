@@ -20,7 +20,7 @@ class LoadingView : View {
     private var mCircleRectF: RectF? = null
     private var endAngleR = 0f
     private var endAngleL = 0f
-    private var progressColor = Color.parseColor("#FF415D")
+    private var progressColor = Color.parseColor("#D9905B")
     internal lateinit var handler: Handler
     private lateinit var thread: HandlerThread
 

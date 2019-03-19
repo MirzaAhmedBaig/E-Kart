@@ -5,9 +5,9 @@
              android:layout_height="match_parent"
              tools:context=".fragments.OrderHistoryFragment">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/orders_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Orders Fragment"/>
+            android:layout_height="match_parent"/>
 
 </FrameLayout>

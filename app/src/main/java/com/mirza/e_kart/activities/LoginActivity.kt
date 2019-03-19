@@ -9,6 +9,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
@@ -16,9 +17,16 @@ import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.extensions.isEmailValid
 import com.mirza.e_kart.extensions.isNetworkAvailable
+import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginModel
+import com.mirza.e_kart.networks.models.LoginResponse
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_login.*
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A login screen that offers login via email/password.
@@ -53,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
     private fun setListeners() {
         login_ok.setOnClickListener {
             if (performValidation()) {
-
+                performAuthentication()
             }
         }
         forget_password.setOnClickListener {
@@ -86,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = Color.parseColor("#FF415D")
+                ds.color = Color.parseColor("#D9905B")
                 ds.isUnderlineText = false
                 ds.linkColor = Color.WHITE
             }
@@ -108,27 +116,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun completedLogin() {
+    private fun completedLogin(jwtToken: String) {
         appPreferences.setLoggedIn(true)
-        appPreferences.setUserId("")
-        appPreferences.setJWTToken("")
+        appPreferences.setUserId(u_email.text.toString())
+        appPreferences.setJWTToken(jwtToken)
+        startActivity(Intent(this, HomeActivity::class.java))
+        finishAffinity()
     }
 
     private fun performAuthentication() {
-        val loginModel =
-            LoginModel(u_email.text.toString(), u_password.text.toString())
+        val loginModel = LoginModel(u_email.text.toString(), u_password.text.toString())
         if (!isNetworkAvailable()) {
             val dialog = CustomAlertDialog().apply {
-                arguments = Bundle().apply {
-                    setMessage("Please check your internet.")
-                    setIcon(R.drawable.ic_warning)
-                }
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
             }
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
         progressDialog.show(supportFragmentManager, "loading_alert_dailog")
-        /*val call = ClientAPI.clientAPI.doLogin(loginModel)
+        val call = ClientAPI.clientAPI.doLogin(loginModel)
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -139,7 +146,7 @@ class LoginActivity : AppCompatActivity() {
                         showToast("Error in logging in!")
                         return
                     }
-                    completedLogin(loginResponse)
+                    completedLogin(loginResponse.access_token)
                 } else {
                     when {
                         response.code() == 400 -> {
@@ -149,17 +156,17 @@ class LoginActivity : AppCompatActivity() {
                         response.code() == 404 -> {
                             val jObjError = JSONObject(response.errorBody()!!.string())
                             u_email.requestFocus()
-                            u_email.error = jObjError.getString("message")
+                            u_email.error = jObjError.getString("error")
                         }
                         response.code() == 500 -> {
                             val jObjError = JSONObject(response.errorBody()!!.string())
                             u_email.requestFocus()
-                            u_email.error = jObjError.getString("message")
+                            u_email.error = jObjError.getString("error")
                         }
                         else -> {
                             try {
                                 val jObjError = JSONObject(response.errorBody()!!.string())
-                                showToast(jObjError.getString("message"))
+                                showToast(jObjError.getString("error"))
                             } catch (e: Exception) {
                                 Log.d(TAG, "Error" + e.message)
                                 showToast("ServerError!")
@@ -177,6 +184,6 @@ class LoginActivity : AppCompatActivity() {
                 t.printStackTrace()
                 showToast("Network Error!")
             }
-        })*/
+        })
     }
 }

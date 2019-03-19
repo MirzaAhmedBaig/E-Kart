@@ -32,21 +32,6 @@
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp" android:id="@+id/imageView"/>
 
-    <TextView
-            android:id="@+id/texr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/avenir_next_regular"
-            android:gravity="center"
-            android:text="Your Shop"
-            android:textAllCaps="true"
-            android:textColor="@color/text_color_black"
-            android:textSize="@dimen/text_size"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
             android:contentDescription="@string/image"
@@ -56,8 +41,8 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_mail"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="30dp" android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/texr"/>
+            android:layout_marginStart="30dp" android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"/>
 
 
     <EditText
@@ -204,5 +189,5 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="50dp"/>
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="32dp"/>
 </android.support.constraint.ConstraintLayout>

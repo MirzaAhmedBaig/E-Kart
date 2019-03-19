@@ -53,4 +53,6 @@
     <string name="ok">OK</string>
     <string name="search">Search</string>
     <string name="search_hint">makanaka</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="user_details">User Details</string>
 </resources>

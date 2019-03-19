@@ -92,7 +92,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = Color.parseColor("#FF415D")
+                ds.color = Color.parseColor("#D9905B")
                 ds.isUnderlineText = false
                 ds.linkColor = Color.WHITE
             }

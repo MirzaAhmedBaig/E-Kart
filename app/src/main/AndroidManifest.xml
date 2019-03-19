@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.mirza.e_kart">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -12,6 +13,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="false"
             android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".activities.BuyingActivity">
+        </activity>
+        <activity android:name=".activities.OrderDetailsActivity">
+        </activity>
+        <activity android:name=".activities.ProductDetailsActivity">
+        </activity>
 
         <provider
                 android:name=".utils.GenericFileProvider"
@@ -29,32 +36,23 @@
                 android:name=".activities.SplashScreenActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/SplashTheme">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
-        </activity>
-        <activity
-                android:name=".activities.HomeActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppTheme.NoActionBar.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
+        </activity>
+        <activity
+                android:name=".activities.HomeActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar.NoActionBar">
         </activity>
         <activity
                 android:name=".activities.LoginActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait">
         </activity>
-
-
     </application>
 
 </manifest>

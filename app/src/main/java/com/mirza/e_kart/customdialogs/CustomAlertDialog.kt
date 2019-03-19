@@ -1,5 +1,6 @@
 package com.mirza.e_kart.customdialogs
 
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -58,6 +59,10 @@ class CustomAlertDialog : android.support.v4.app.DialogFragment() {
             only_ok_button.visibility = View.VISIBLE
             ok_button.visibility = View.GONE
             cancel_button.visibility = View.GONE
+        } else {
+            only_ok_button.visibility = View.GONE
+            ok_button.visibility = View.VISIBLE
+            cancel_button.visibility = View.VISIBLE
         }
         if (noButtons) {
             only_ok_button.visibility = View.GONE
@@ -88,6 +93,11 @@ class CustomAlertDialog : android.support.v4.app.DialogFragment() {
             dismiss()
             customDialogListener?.onPositiveClicked()
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        customDialogListener?.onNegativeClicked()
     }
 
     fun setDismissListener(customDialogListener: CustomDialogListener) {

@@ -23,11 +23,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.mirza.e_kart.R
+import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.fragments.HomeFragment
 import com.mirza.e_kart.fragments.OrderHistoryFragment
 import com.mirza.e_kart.fragments.ReferralFragment
+import com.mirza.e_kart.listeners.CustomDialogListener
+import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -37,6 +41,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val TAG = HomeActivity::class.java.simpleName
     private val fromStrings = arrayOf("productName")
+    private var menuIndex = 0
+
+    private val appPreference by lazy {
+        AppPreferences(this)
+    }
     private val toInts by lazy {
         IntArray(1).apply {
             set(0, R.id.suggestion_text)
@@ -53,6 +62,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
     }
 
+
     private val suggestionList = listOf(
         "Bauru", "Sao Paulo", "Sao Paulosdfsd", "Rio de Janeiro",
         "Bahia", "Mato Grosso", "Minas Gerais",
@@ -68,6 +78,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        nav_view.menu.getItem(menuIndex).isChecked = true
     }
 
 
@@ -96,7 +107,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 shareApp()
             }
             R.id.nav_logout -> {
-
+                performLogOut()
             }
         }
 
@@ -120,7 +131,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSearchView(searchView)
         return super.onCreateOptionsMenu(menu)
     }
-
 
     private fun setSearchView(searchView: SearchView?) {
         searchView?.suggestionsAdapter = suggestionAdapter
@@ -167,7 +177,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         suggestionAdapter.changeCursor(cursor)
     }
 
-
     private fun setUpNavigationBar() {
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
@@ -182,6 +191,16 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+        val headerView = nav_view.getHeaderView(0)
+
+        setUserProfile(headerView)
+    }
+
+
+    private fun setUserProfile(view: View) {
+        view.user_email.text = appPreference.getUserId()
+        view.user_name.text = "Mirza Ahmed Baig"
+        view.user_image.setImageResource(R.drawable.ic_person)
     }
 
     private fun moveToHomePage() {
@@ -189,6 +208,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (fragment is HomeFragment)
             return
         supportFragmentManager.beginTransaction().replace(R.id.main_layout, HomeFragment(), "home_fragment").commit()
+        menuIndex = 0
     }
 
     private fun moveToOrdersPage() {
@@ -197,6 +217,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return
         supportFragmentManager.beginTransaction().replace(R.id.main_layout, OrderHistoryFragment(), "home_fragment")
             .commit()
+        menuIndex = 1
     }
 
     private fun moveToReferralPage() {
@@ -205,6 +226,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return
         supportFragmentManager.beginTransaction().replace(R.id.main_layout, ReferralFragment(), "home_fragment")
             .commit()
+        menuIndex = 2
     }
 
     private fun shareApp() {
@@ -236,5 +258,29 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         shareIntent.type = "image/png"
         startActivity(Intent.createChooser(shareIntent, "Share with"))
+    }
+
+    private fun performLogOut() {
+        val innerNavView = nav_view
+        val dialog = CustomAlertDialog().apply {
+            arguments = Bundle().apply {
+                setMessage("Are you sure you want to log out?")
+                setSingleButton(false)
+                setDismissListener(object : CustomDialogListener {
+                    override fun onPositiveClicked() {
+                        appPreference.deleteAll()
+                        startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                        finishAffinity()
+                    }
+
+                    override fun onNegativeClicked() {
+                        innerNavView.menu.getItem(menuIndex)?.isChecked = true
+                    }
+
+                })
+            }
+        }
+        dialog.show(supportFragmentManager, "hi_how")
+
     }
 }

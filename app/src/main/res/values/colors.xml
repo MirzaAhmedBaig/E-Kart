@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#FF415D</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimaryDark">#D9905B</color>
+    <color name="colorAccent">#D9905B</color>
 
     <color name="transparent">#00FFFFFF</color>
-    <color name="app_background_start">#F16D80</color>
-    <color name="app_background_end">#FF415D</color>
+    <color name="app_background_start">#72A8C9</color>
+    <color name="app_background_end">#41738E</color>
     <color name="text_color_black">#202020</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
@@ -15,6 +15,14 @@
 
 
     <color name="buttons_secondary_text_color">#ffffff</color>
-    <color name="button_primary">#FF415D</color>
-    <color name="button_secondary">#ffffff</color>
+    <color name="button_primary">#41738E</color>
+    <color name="button_secondary">#D9905B</color>
+
+    <color name="delivered_color">#ffffff</color>
+    <color name="cancelled_color">#ffffff</color>
+    <color name="gray_50">#cccccc</color>
+    <color name="gray_300">#777777</color>
+
+    <color name="color">#D9905B</color>
+    <color name="color2">#41738E</color>
 </resources>
