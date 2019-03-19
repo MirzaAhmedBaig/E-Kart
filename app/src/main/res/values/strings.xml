@@ -55,4 +55,7 @@
     <string name="search_hint">makanaka</string>
     <string name="buy_now">Buy Now</string>
     <string name="user_details">User Details</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="submit">Submit</string>
 </resources>

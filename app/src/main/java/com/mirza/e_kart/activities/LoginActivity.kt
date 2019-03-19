@@ -15,6 +15,7 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
+import com.mirza.e_kart.db.storeUserDetails
 import com.mirza.e_kart.extensions.isEmailValid
 import com.mirza.e_kart.extensions.isNetworkAvailable
 import com.mirza.e_kart.extensions.showToast
@@ -22,6 +23,7 @@ import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginModel
 import com.mirza.e_kart.networks.models.LoginResponse
 import com.mirza.e_kart.preferences.AppPreferences
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import retrofit2.Call
@@ -116,10 +118,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun completedLogin(jwtToken: String) {
+    private fun completedLogin(response: LoginResponse) {
+        storeUserDetails(Realm.getDefaultInstance(), response.user)
         appPreferences.setLoggedIn(true)
-        appPreferences.setUserId(u_email.text.toString())
-        appPreferences.setJWTToken(jwtToken)
+        appPreferences.setUserId(response.user.email)
+        appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
+        appPreferences.setJWTToken(response.access_token)
         startActivity(Intent(this, HomeActivity::class.java))
         finishAffinity()
     }
@@ -146,7 +150,7 @@ class LoginActivity : AppCompatActivity() {
                         showToast("Error in logging in!")
                         return
                     }
-                    completedLogin(loginResponse.access_token)
+                    completedLogin(loginResponse)
                 } else {
                     when {
                         response.code() == 400 -> {

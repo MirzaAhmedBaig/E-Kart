@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end">
+
+    <TextView
+            android:id="@+id/item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_next_regular"
+            android:padding="11dp"
+            android:gravity="end"
+            android:textAlignment="textEnd"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_size"/>
+</RelativeLayout>

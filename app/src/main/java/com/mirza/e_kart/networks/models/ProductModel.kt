@@ -1,14 +1,14 @@
 package com.mirza.e_kart.networks.models
 
 data class ProductModel(
-    val id: String,
+    val id: Int,
     val name: String,
-    val category_id: String,
-    val brand_id: String,
+    val category_id: Int,
+    val brand_id: Int,
     val image: String,
     val description: String,
-    val interest: String,
-    val price: String,
-    val created_at: String,
-    val updated_at: String
+    val interest: Float,
+    val price: Int,
+    val created_at: Long,
+    val updated_at: Long
 )

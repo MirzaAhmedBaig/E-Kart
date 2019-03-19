@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun startProductDetailsPage(productId: String) {
+    private fun startProductDetailsPage(productId: Int) {
         Intent(context, ProductDetailsActivity::class.java).apply {
             putExtra("id", productId)
         }.also {
@@ -71,9 +71,16 @@ class HomeFragment : Fragment() {
         (0..5).forEach {
             add(
                 ProductModel(
-                    "$it", "$it Product", "$it Category", "$it brand",
+                    it,
+                    "$it Product",
+                    it,
+                    it,
                     "https://rukminim1.flixcart.com/image/832/832/jl16s280/mobile/t/v/q/nokia-6-1-plus-na-original-imaf892edytmjfgg.jpeg?q=70",
-                    "4 GB RAM | 64 GB ROM | Expandable Upto 400 GB", "2", "$it 500", "", ""
+                    "4 GB RAM | 64 GB ROM | Expandable Upto 400 GB",
+                    2f,
+                    it * 1000,
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis()
                 )
             )
         }

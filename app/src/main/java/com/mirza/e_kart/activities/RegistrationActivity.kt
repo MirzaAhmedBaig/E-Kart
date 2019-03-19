@@ -50,9 +50,14 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performValidation(): Boolean {
-        if (u_name.text.toString().isBlank()) {
-            u_name.requestFocus()
-            u_name.error = "Enter user name"
+        if (u_name_firs.text.toString().isBlank()) {
+            u_name_firs.requestFocus()
+            u_name_firs.error = "Enter user name"
+            return false
+        }
+        if (u_name_last.text.toString().isBlank()) {
+            u_name_last.requestFocus()
+            u_name_last.error = "Enter user name"
             return false
         }
         if (!u_email.text.toString().isEmailValid()) {
@@ -75,7 +80,8 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun clearAllErrors() {
-        u_name.error = null
+        u_name_firs.error = null
+        u_name_last.error = null
         u_email.error = null
         u_password.error = null
         u_number.error = null

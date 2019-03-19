@@ -7,6 +7,7 @@ package com.mirza.e_kart.networks.models
  * mirza@avantari.org
  */
 data class LoginResponse(
+    val user: UserDetails,
     val access_token: String,
     val token_type: String,
     val expires_in: Long

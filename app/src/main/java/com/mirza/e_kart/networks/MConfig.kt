@@ -7,7 +7,8 @@ class MConfig {
     companion object {
         const val BASE_URL = "https://sadathostings.online/finance/public/api/authV2/"
         const val LOGIN = "login"
-        const val SIGNUP = "login"
+        const val SIGNUP = "signup"
+        const val PRODUCTS = "product"
     }
 }
 

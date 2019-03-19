@@ -26,7 +26,7 @@
 
     <ImageView
             android:contentDescription="@string/image"
-            android:id="@+id/u_name_pic"
+            android:id="@+id/u_name_firs_pic"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_centerVertical="true"
@@ -37,12 +37,28 @@
 
 
     <EditText
-            android:id="@+id/u_name"
+            android:id="@+id/u_name_firs"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:fontFamily="@font/avenir_next_regular"
-            android:hint="@string/full_name"
+            android:hint="@string/first_name"
+            android:maxLines="1"
+            android:selectAllOnFocus="false"
+            android:textColor="@color/text_color_black"
+            android:textColorHint="@color/hint_color"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toEndOf="@+id/u_name_firs_pic"
+            app:layout_constraintTop_toTopOf="@+id/u_name_firs_pic"
+            android:layout_marginStart="16dp" app:layout_constraintBottom_toBottomOf="@+id/u_name_firs_pic"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/u_name_last"/>
+    <EditText
+            android:id="@+id/u_name_last"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:fontFamily="@font/avenir_next_regular"
+            android:hint="@string/last_name"
             android:maxLines="1"
             android:selectAllOnFocus="false"
             android:textColor="@color/text_color_black"
@@ -50,10 +66,10 @@
             android:textSize="@dimen/text_size"
             android:layout_marginEnd="30dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/u_name_pic"
-            app:layout_constraintTop_toTopOf="@+id/u_name_pic"
-            android:layout_marginStart="16dp" app:layout_constraintBottom_toBottomOf="@+id/u_name_pic"/>
+            app:layout_constraintTop_toTopOf="@+id/u_name_firs_pic"
+            app:layout_constraintBottom_toBottomOf="@+id/u_name_firs_pic"
+            app:layout_constraintStart_toEndOf="@+id/u_name_firs" android:layout_marginStart="8dp"
+            app:layout_constraintHorizontal_bias="0.5"/>
 
     <View
             android:id="@+id/vx"
@@ -61,8 +77,8 @@
             android:layout_height="0.5dp"
             android:background="@color/hint_color"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/u_name" app:layout_constraintEnd_toEndOf="@+id/u_name"
-            app:layout_constraintStart_toStartOf="@+id/u_name_pic"/>
+            app:layout_constraintTop_toBottomOf="@+id/u_name_firs" app:layout_constraintEnd_toEndOf="@+id/u_name_firs"
+            app:layout_constraintStart_toStartOf="@+id/u_name_firs_pic"/>
 
 
     <ImageView

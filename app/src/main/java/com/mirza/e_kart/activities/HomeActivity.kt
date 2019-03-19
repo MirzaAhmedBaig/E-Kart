@@ -24,11 +24,14 @@ import android.view.MenuItem
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
+import com.mirza.e_kart.db.removeAll
 import com.mirza.e_kart.fragments.HomeFragment
 import com.mirza.e_kart.fragments.OrderHistoryFragment
 import com.mirza.e_kart.fragments.ReferralFragment
 import com.mirza.e_kart.listeners.CustomDialogListener
+import com.mirza.e_kart.networks.models.UserDetails
 import com.mirza.e_kart.preferences.AppPreferences
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -42,6 +45,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val TAG = HomeActivity::class.java.simpleName
     private val fromStrings = arrayOf("productName")
     private var menuIndex = 0
+
+    private val realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     private val appPreference by lazy {
         AppPreferences(this)
@@ -198,8 +205,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun setUserProfile(view: View) {
+        val userDetails = realm.where(UserDetails::class.java).findFirst()
         view.user_email.text = appPreference.getUserId()
-        view.user_name.text = "Mirza Ahmed Baig"
+        view.user_name.text = appPreference.getUserName()
         view.user_image.setImageResource(R.drawable.ic_person)
     }
 
@@ -268,6 +276,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setSingleButton(false)
                 setDismissListener(object : CustomDialogListener {
                     override fun onPositiveClicked() {
+                        removeAll()
                         appPreference.deleteAll()
                         startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                         finishAffinity()

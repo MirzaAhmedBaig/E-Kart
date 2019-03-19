@@ -13,7 +13,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="false"
             android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activities.BuyingActivity">
+        <activity android:name=".activities.BuyingActivity"
+                  android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".activities.OrderDetailsActivity">
         </activity>
@@ -36,12 +43,12 @@
                 android:name=".activities.SplashScreenActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/SplashTheme">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
                 android:name=".activities.HomeActivity"
