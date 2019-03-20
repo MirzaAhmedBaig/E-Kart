@@ -37,7 +37,7 @@
 
 
     <EditText
-            android:id="@+id/u_name_firs"
+            android:id="@+id/u_name_first"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
@@ -68,7 +68,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/u_name_firs_pic"
             app:layout_constraintBottom_toBottomOf="@+id/u_name_firs_pic"
-            app:layout_constraintStart_toEndOf="@+id/u_name_firs" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@+id/u_name_first" android:layout_marginStart="8dp"
             app:layout_constraintHorizontal_bias="0.5"/>
 
     <View
@@ -77,7 +77,7 @@
             android:layout_height="0.5dp"
             android:background="@color/hint_color"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/u_name_firs" app:layout_constraintEnd_toEndOf="@+id/u_name_firs"
+            app:layout_constraintTop_toBottomOf="@+id/u_name_first" app:layout_constraintEnd_toEndOf="@+id/u_name_first"
             app:layout_constraintStart_toStartOf="@+id/u_name_firs_pic"/>
 
 

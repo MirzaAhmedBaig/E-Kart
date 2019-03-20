@@ -58,4 +58,24 @@
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="submit">Submit</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="current_address">Current Address</string>
+    <string name="same_as_current_address">Same as current address?</string>
+    <string name="permanent_address">Permanent Address</string>
+    <string name="aadhaar_card_number">Aadhaar Card Number</string>
+    <string name="pan_card_number">Pan Card Number</string>
+    <string name="company_name_if_any">Company Name if any</string>
+    <string name="gross_monthly_income">Gross Monthly Income</string>
+    <string name="annual_income">Annual Income</string>
+    <string name="family_and_guarantor_details">Family and Guarantor Details</string>
+    <string name="family_member_name">Family Member Name</string>
+    <string name="family_member_mobile_number">Family Member Mobile Number</string>
+    <string name="guarantor_name">Guarantor Name</string>
+    <string name="guarantor_mobile_number">Guarantor Mobile Number</string>
+    <string name="referral_code_if_any">Referral Code if any</string>
+    <string name="documents">Documents</string>
+    <string name="take_image_of_aadhaar_card">Take image of Aadhaar card</string>
+    <string name="front_image">Front Image</string>
+    <string name="back_image">Back Image</string>
+    <string name="take_image_of_pan_card">Take image of Pan card</string>
 </resources>
