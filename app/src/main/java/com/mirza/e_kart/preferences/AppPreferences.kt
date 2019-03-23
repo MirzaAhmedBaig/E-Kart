@@ -3,6 +3,8 @@ package com.mirza.e_kart.preferences
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.mirza.e_kart.networks.models.UserDetails
 
 
 /**
@@ -23,31 +25,35 @@ class AppPreferences(context: Context) {
     private val USER_DATA = "$APP_SHARED_PREFS.userdata"
     private val JWT_TOKEN = "$APP_SHARED_PREFS.jwttoken"
     private val IS_LOGGED_IN = "$APP_SHARED_PREFS.isuserloggedin"
-    private val USER_ID = "$APP_SHARED_PREFS.usedetails.id"
+    private val REFFERAL_ID = "$APP_SHARED_PREFS.usedetails.refer_id"
+    private val EMAIL_ID = "$APP_SHARED_PREFS.usedetails.email"
     private val USER_NAME = "$APP_SHARED_PREFS.usedetails.name"
 
     private val TAG = AppPreferences::class.java.simpleName
 
 
     init {
-        this._sharedPrefs = context.getSharedPreferences(APP_SHARED_PREFS,
-                Activity.MODE_PRIVATE)
+        this._sharedPrefs = context.getSharedPreferences(
+            APP_SHARED_PREFS,
+            Activity.MODE_PRIVATE
+        )
         this._prefsEditor = _sharedPrefs.edit()
         this._prefsEditor.apply()
     }
 
 
-    /*fun setUser(user: String?) {
+    fun setUser(user: UserDetails) {
         val userString = Gson().toJson(user)
         _prefsEditor.putString(USER_DATA, userString)
         _prefsEditor.commit()
     }
 
-    fun getUser(): LoginResponse {
+    fun getUser(): UserDetails {
         val userData = _sharedPrefs.getString(USER_DATA, null)
-        return Gson().fromJson<LoginResponse>(userData, LoginResponse::class.java)
+        return Gson().fromJson<UserDetails>(userData, UserDetails::class.java)
     }
-*/
+
+
     fun setJWTToken(token: String) {
         _prefsEditor.putString(JWT_TOKEN, token)
         _prefsEditor.commit()
@@ -57,12 +63,21 @@ class AppPreferences(context: Context) {
         return _sharedPrefs.getString(JWT_TOKEN, null)
     }
 
-    fun getUserId(): String? {
-        return _sharedPrefs.getString(USER_ID, null)
+    fun getReferId(): String? {
+        return _sharedPrefs.getString(REFFERAL_ID, null)
     }
 
-    fun setUserId(userName: String?) {
-        _prefsEditor.putString(USER_ID, userName)
+    fun setReferId(userName: String?) {
+        _prefsEditor.putString(REFFERAL_ID, userName)
+        _prefsEditor.commit()
+    }
+
+    fun getEmail(): String? {
+        return _sharedPrefs.getString(EMAIL_ID, null)
+    }
+
+    fun setEmail(email: String?) {
+        _prefsEditor.putString(EMAIL_ID, email)
         _prefsEditor.commit()
     }
 

@@ -9,8 +9,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/avenir_next_regular"
             android:padding="11dp"
-            android:gravity="end"
-            android:textAlignment="textEnd"
+            android:gravity="start"
             android:textColor="@color/text_color_black"
             android:textSize="@dimen/text_size"/>
 </RelativeLayout>

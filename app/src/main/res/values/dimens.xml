@@ -6,6 +6,7 @@
 
     <dimen name="product_title_text">22sp</dimen>
     <dimen name="product_sub_title_text">20sp</dimen>
+    <dimen name="big_title_text">40sp</dimen>
     <dimen name="title_text">30sp</dimen>
     <dimen name="small_text_size">15sp</dimen>
     <dimen name="text_size">18sp</dimen>

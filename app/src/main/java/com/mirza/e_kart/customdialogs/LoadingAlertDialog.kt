@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_loading_alert_dialog.view.*
 class LoadingAlertDialog : android.support.v4.app.DialogFragment() {
 
     val TAG = LoadingAlertDialog::class.java.simpleName
+    private var message = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogStyle)
         super.onCreate(savedInstanceState)
@@ -30,10 +31,20 @@ class LoadingAlertDialog : android.support.v4.app.DialogFragment() {
             Color.parseColor("#D9905B"),
             android.graphics.PorterDuff.Mode.SRC_IN
         )
+        if (message != "") {
+            view.messageTV.text = message
+            view.messageTV.visibility = View.VISIBLE
+            view.rootBefore.setBackgroundResource(R.drawable.custom_dialog_background_drawable_inset)
+        }
+        isCancelable = false
     }
 
     override fun show(manager: FragmentManager?, tag: String?) {
         manager?.beginTransaction()?.add(this, tag)?.commitAllowingStateLoss()
+    }
+
+    fun setMessage(message: String) {
+        this.message = message
     }
 
 }

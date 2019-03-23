@@ -8,7 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
-import com.mirza.e_kart.networks.models.ProductModel
+import com.mirza.e_kart.extensions.getStatusByCode
+import com.mirza.e_kart.networks.MConfig
+import com.mirza.e_kart.networks.models.OrderedProduct
 
 
 /**
@@ -17,7 +19,7 @@ import com.mirza.e_kart.networks.models.ProductModel
  * mirza@avantari.org
  */
 
-class OrderListAdapter(val dataArray: ArrayList<ProductModel>) :
+class OrderListAdapter(val dataArray: ArrayList<OrderedProduct>) :
     RecyclerView.Adapter<OrderListAdapter.ProductViewHolder>() {
     private val TAG = OrderListAdapter::class.java.simpleName
 
@@ -37,15 +39,20 @@ class OrderListAdapter(val dataArray: ArrayList<ProductModel>) :
         private val productName by lazy {
             itemView.findViewById<TextView>(R.id.product_name)
         }
+        private val productPrice by lazy {
+            itemView.findViewById<TextView>(R.id.product_price)
+        }
         private val productStatus by lazy {
             itemView.findViewById<TextView>(R.id.product_status)
         }
 
-        fun onBind(productInfo: ProductModel) {
+        fun onBind(orderedProduct: OrderedProduct) {
             Glide.with(thumbnailImage.context)
-                .load(productInfo.image)
+                .load(MConfig.IMAGE_BASE_URL + orderedProduct.image)
                 .into(thumbnailImage)
-            productName.text = productInfo.name
+            productName.text = orderedProduct.product_name
+            productPrice.text = "\u20B9" + orderedProduct.price.toString()
+            productStatus.text = getStatusByCode(orderedProduct.status)
         }
     }
 }

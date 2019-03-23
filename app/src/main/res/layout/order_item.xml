@@ -21,6 +21,20 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"/>
 
     <TextView
+            android:id="@+id/product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_next_medium"
+            android:text="@string/price"
+            android:textColor="@color/black"
+            android:textSize="@dimen/small_text_size"
+            android:visibility="visible"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/product_name"
+            android:layout_marginTop="8dp" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"/>
+
+    <TextView
             android:id="@+id/product_status"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,9 +44,10 @@
             android:textSize="@dimen/small_text_size"
             android:visibility="visible"
             android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/product_name"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"/>
+            app:layout_constraintEnd_toStartOf="@+id/guideline" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/v1" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/product_price"/>
 
     <ImageView
             android:id="@+id/thumbnail"

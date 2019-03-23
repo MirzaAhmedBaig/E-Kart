@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="10dp"/>
+            <solid android:color="#4FD9905B"/>
+            <stroke android:width="1.5dp" android:dashGap="10dp" android:dashWidth="10dp"
+                    android:color="@color/button_secondary"/>
+        </shape>
+    </item>
+</layer-list>
+

@@ -14,7 +14,7 @@
                 android:title="@string/my_orders"/>
         <item
                 android:id="@+id/nav_referral"
-                android:icon="@drawable/ic_home"
+                android:icon="@drawable/ic_refer"
                 android:title="@string/referral"/>
         <item
                 android:id="@+id/nav_share"

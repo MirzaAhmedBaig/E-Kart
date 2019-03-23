@@ -15,7 +15,6 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
-import com.mirza.e_kart.db.storeUserDetails
 import com.mirza.e_kart.extensions.isEmailValid
 import com.mirza.e_kart.extensions.isNetworkAvailable
 import com.mirza.e_kart.extensions.showToast
@@ -23,7 +22,6 @@ import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginModel
 import com.mirza.e_kart.networks.models.LoginResponse
 import com.mirza.e_kart.preferences.AppPreferences
-import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import retrofit2.Call
@@ -119,9 +117,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun completedLogin(response: LoginResponse) {
-        storeUserDetails(Realm.getDefaultInstance(), response.user)
+        appPreferences.setUser(response.user)
         appPreferences.setLoggedIn(true)
-        appPreferences.setUserId(response.user.email)
+        appPreferences.setEmail(response.user.email)
         appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
         appPreferences.setJWTToken(response.access_token)
         startActivity(Intent(this, HomeActivity::class.java))
@@ -134,6 +132,7 @@ class LoginActivity : AppCompatActivity() {
             val dialog = CustomAlertDialog().apply {
                 setMessage("Please check your internet.")
                 setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
             }
             dialog.show(supportFragmentManager, "select_day_alert")
             return
@@ -158,14 +157,12 @@ class LoginActivity : AppCompatActivity() {
                             u_password.error = "Invalid password"
                         }
                         response.code() == 404 -> {
-                            val jObjError = JSONObject(response.errorBody()!!.string())
+                            /*val jObjError = JSONObject(response.errorBody()!!.string())
                             u_email.requestFocus()
-                            u_email.error = jObjError.getString("error")
+                            u_email.error = jObjError.getString("error")*/
                         }
                         response.code() == 500 -> {
-                            val jObjError = JSONObject(response.errorBody()!!.string())
-                            u_email.requestFocus()
-                            u_email.error = jObjError.getString("error")
+                            showToast("Internal server error, please try again")
                         }
                         else -> {
                             try {

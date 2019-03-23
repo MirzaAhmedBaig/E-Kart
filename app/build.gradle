@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.mirza.e_kart"
+        applicationId "com.ten40infotech.nfpl"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -44,10 +44,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
-apply plugin: 'realm-android'
+/*apply plugin: 'realm-android'
 realm {
     syncEnabled = true
-}
+}*/
 
 androidExtensions {
     experimental = true

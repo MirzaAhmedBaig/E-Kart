@@ -5,5 +5,6 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textSize="@dimen/text_size"
+          android:gravity="start"
           android:fontFamily="@font/avenir_next_regular"
           android:singleLine="true"/>

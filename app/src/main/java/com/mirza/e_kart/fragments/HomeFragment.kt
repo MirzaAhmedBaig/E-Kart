@@ -12,15 +12,24 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.activities.ProductDetailsActivity
 import com.mirza.e_kart.adapters.ProductListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
+import com.mirza.e_kart.listeners.RefreshProductListener
+import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
+import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_home.*
+import showToast
 
 
 class HomeFragment : Fragment() {
 
     private val TAG = HomeFragment::class.java.simpleName
+    private var refreshProductListener: RefreshProductListener? = null
     private val productAdapter by lazy {
         product_list.adapter as ProductListAdapter
+    }
+
+    private val productList by lazy {
+        (arguments?.getParcelable("productList") as ProductList?)?.product
     }
 
     override fun onCreateView(
@@ -32,14 +41,29 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setProductList()
+        productList?.let {
+            setProductList(it)
+
+        }
+        setRefreshLayout()
     }
 
+    override fun onResume() {
+        super.onResume()
+        stopRefreshing()
+    }
 
-    private fun setProductList() {
+    private fun setRefreshLayout() {
+        swipe_refresh_layout.setOnRefreshListener {
+            stopRefreshing()
+            refreshProductListener?.onReferesh()
+        }
+    }
+
+    private fun setProductList(products: ArrayList<ProductModel>) {
         with(product_list) {
             layoutManager = LinearLayoutManager(context)
-            adapter = ProductListAdapter(dummyProducts)
+            adapter = ProductListAdapter(products)
 
             addOnItemTouchListener(
                 RecyclerItemClickListener(
@@ -48,51 +72,31 @@ class HomeFragment : Fragment() {
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")
-                            startProductDetailsPage(productAdapter.dataArray[position].id)
+                            if (isNetworkAvailable())
+                                startProductDetailsPage(productAdapter.dataArray[position])
+                            else
+                                showToast("Internet is not available")
 
                         }
 
                     })
             )
         }
-
-
     }
 
-    private fun startProductDetailsPage(productId: Int) {
+    private fun startProductDetailsPage(productDetails: ProductModel) {
         Intent(context, ProductDetailsActivity::class.java).apply {
-            putExtra("id", productId)
+            putExtra("productDetails", productDetails)
         }.also {
             context?.startActivity(it)
         }
     }
 
-    private val dummyProducts = ArrayList<ProductModel>().apply {
-        (0..5).forEach {
-            add(
-                ProductModel(
-                    it,
-                    "$it Product",
-                    it,
-                    it,
-                    "https://rukminim1.flixcart.com/image/832/832/jl16s280/mobile/t/v/q/nokia-6-1-plus-na-original-imaf892edytmjfgg.jpeg?q=70",
-                    "4 GB RAM | 64 GB ROM | Expandable Upto 400 GB",
-                    2f,
-                    it * 1000,
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis()
-                )
-            )
-        }
+    fun setRefreshingListener(refreshProductListener: RefreshProductListener) {
+        this.refreshProductListener = refreshProductListener
     }
 
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
+    fun stopRefreshing() {
+        swipe_refresh_layout?.isRefreshing = false
     }
 }

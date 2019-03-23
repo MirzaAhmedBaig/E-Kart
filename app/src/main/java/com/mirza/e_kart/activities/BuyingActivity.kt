@@ -1,16 +1,22 @@
 package com.mirza.e_kart.activities
 
+import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -19,8 +25,22 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.SpinnerAdapter
 import com.mirza.e_kart.constants.Constants
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
+import com.mirza.e_kart.customdialogs.LoadingAlertDialog
+import com.mirza.e_kart.customdialogs.SelfieDialog
 import com.mirza.e_kart.extensions.*
+import com.mirza.e_kart.listeners.CustomDialogListener
+import com.mirza.e_kart.listeners.SelfieDialogListener
+import com.mirza.e_kart.networks.ClientAPI
+import com.mirza.e_kart.preferences.AppPreferences
+import kotlinx.android.synthetic.main.activity_buying.*
 import kotlinx.android.synthetic.main.content_buy_activity.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,9 +53,32 @@ class BuyingActivity : AppCompatActivity() {
     private var selectedPinCode = -1
     private var selectedResidence = ""
     private var selectedEmployment = ""
-    private var documentsPathList = arrayOfNulls<String?>(4)
+    private var documentsPathList = arrayOfNulls<String?>(5)
+
+    private val permsRequestCode = 200
+    private var cameraImageCode = -1
+    private val perms = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    private val progressDialog by lazy {
+        LoadingAlertDialog().apply {
+            setMessage("Please waite while we submit your request. It may take few minutes to complete.")
+        }
+    }
+
     private val myCalendar by lazy {
         Calendar.getInstance()
+    }
+
+    private val appPreferences by lazy {
+        AppPreferences(this)
+    }
+
+    private val productId by lazy {
+        intent.getIntExtra("id", -1)
     }
 
     private val datePickerListener by lazy {
@@ -45,6 +88,8 @@ class BuyingActivity : AppCompatActivity() {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             setDateTodobET()
             dob.error = null
+            gender.requestFocus()
+            gender.performClick()
         }
     }
 
@@ -54,8 +99,33 @@ class BuyingActivity : AppCompatActivity() {
             this, datePickerListener, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
             myCalendar.get(Calendar.DAY_OF_MONTH)
-        )
+        ).apply {
+            datePicker.maxDate = System.currentTimeMillis()
+        }
     }
+
+    private val selfieDialog by lazy {
+        SelfieDialog().apply {
+            setListener(object : SelfieDialogListener {
+                override fun onCameraStart() {
+                    openCamera(Constants.SELFIE_PIC_REQUEST)
+                }
+
+                override fun onImageSubmit() {
+                    Log.d(TAG, "onImageSubmit")
+                    sendCustomerRequest()
+                }
+
+                override fun onRetryClicked() {
+                    Handler().postDelayed({
+                        show(supportFragmentManager, "selfie_dialog")
+                    }, 500)
+                }
+
+            })
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,14 +136,18 @@ class BuyingActivity : AppCompatActivity() {
         initSpinner(pin_codes, pinCodes, Constants.PINCODES)
         initSpinner(residence_type, residences, Constants.RESIDENCES)
         initSpinner(empolyment_type, employmentType, Constants.EMPLOYMENT)
+        Log.d(TAG, "Id : ${productId}")
     }
 
     private fun init() {
-        u_pan.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
-        referral_code.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+        u_pan.filters = arrayOf<InputFilter>(InputFilter.AllCaps(), InputFilter.LengthFilter(10))
+        referral_code.filters = arrayOf<InputFilter>(InputFilter.AllCaps(), InputFilter.LengthFilter(6))
     }
 
     private fun setListeners() {
+        back_button.setOnClickListener {
+            finish()
+        }
         buying_layout.setOnClickListener {
             closeKeyBoard()
         }
@@ -81,7 +155,7 @@ class BuyingActivity : AppCompatActivity() {
         submit_btn.setOnClickListener {
             clearErrors()
             if (validateForm()) {
-
+                selfieDialog.show(supportFragmentManager, "selfie_dialog")
             }
         }
         dob.setOnClickListener {
@@ -104,14 +178,92 @@ class BuyingActivity : AppCompatActivity() {
         }
 
         aadhaar_card_front.setOnClickListener {
-            openCamera(Constants.AADHAAR_FRONT_PIC_REQUEST)
+            showAlert(
+                "Please take image of Aadhaar card's front side, any invalid image will not approve your loan.",
+                false
+            ) {
+                openCamera(Constants.AADHAAR_FRONT_PIC_REQUEST)
+            }
         }
         aadhaar_card_back.setOnClickListener {
-            openCamera(Constants.AADHAAR_BACK_PIC_REQUEST)
+            showAlert(
+                "Please take image of Aadhaar card's back side, any invalid image will not approve your loan.",
+                false
+            ) {
+                openCamera(Constants.AADHAAR_BACK_PIC_REQUEST)
+            }
         }
         pan_card.setOnClickListener {
-            openCamera(Constants.PAN_CARD_PIC_REQUEST)
+            showAlert(
+                "Please take image of Pan card's front side, any invalid image will not approve your loan.",
+                false
+            ) {
+                openCamera(Constants.PAN_CARD_PIC_REQUEST)
+            }
+
         }
+
+        passbook.setOnClickListener {
+            showAlert(
+                "Please take image of Bank Passbook front side, any invalid image will not approve your loan.",
+                false
+            ) {
+                openCamera(Constants.PASSBOOK_PIC_REQUEST)
+            }
+
+        }
+
+        u_name_first.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
+                    Handler().postDelayed({
+                        u_name_last.requestFocus()
+                    }, 100)
+                    return true
+                }
+                return false
+            }
+        })
+
+        u_name_last.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
+                    Handler().postDelayed({
+                        u_name_last.clearFocus()
+                        closeKeyBoard()
+                        datePickerDialog.show()
+                    }, 100)
+                    return true
+                }
+                return false
+            }
+        })
+
+        u_pan.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
+                    Handler().postDelayed({
+                        u_pan.clearFocus()
+                        closeKeyBoard()
+                        empolyment_type.requestFocus()
+                        empolyment_type.performClick()
+                    }, 100)
+                    return true
+                }
+                return false
+            }
+        })
+        monthly_income.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
+                    Handler().postDelayed({
+                        annual_income.requestFocus()
+                    }, 100)
+                    return true
+                }
+                return false
+            }
+        })
     }
 
     private fun initSpinner(spinner: Spinner, dataList: ArrayList<String>, type: Int) {
@@ -121,24 +273,33 @@ class BuyingActivity : AppCompatActivity() {
         spinner.isSelected = false
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                Log.d(TAG, "OnItemSelelcted called : $position $type")
+                Log.d(TAG, "onItemSelected called : $position $type")
                 if (position != 0) {
                     when (type) {
                         Constants.GENDER -> {
                             gender_error.error = null
                             selectedGender = genderList[position]
+                            current_address.requestFocus()
+                            openKeyBoard()
                         }
                         Constants.PINCODES -> {
+                            closeKeyBoard()
                             pin_error.error = null
                             selectedPinCode = pinCodes[position].toInt()
+                            residence_type.requestFocus()
+                            residence_type.performClick()
                         }
                         Constants.RESIDENCES -> {
                             residences_error.error = null
                             selectedResidence = residences[position]
+                            u_aadhaar.requestFocus()
                         }
                         Constants.EMPLOYMENT -> {
                             empolyment_error.error = null
                             selectedEmployment = employmentType[position]
+                            company_name.requestFocus()
+                            closeKeyBoard()
+                            openKeyBoard()
                         }
                     }
                 }
@@ -160,6 +321,14 @@ class BuyingActivity : AppCompatActivity() {
         if (view != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    private fun openKeyBoard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.showSoftInput(view, 0)
         }
     }
 
@@ -269,6 +438,11 @@ class BuyingActivity : AppCompatActivity() {
             return false
         }
 
+        if (documentsPathList[4] == null) {
+            showAlert("Please take Bank Passbook's front page image")
+            return false
+        }
+
         return true
     }
 
@@ -295,15 +469,16 @@ class BuyingActivity : AppCompatActivity() {
 
     private var imageUri: Uri? = null
     private fun openCamera(requestCode: Int) {
-        /*val cameraIntent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, requestCode)*/
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
-        imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        startActivityForResult(intent, requestCode)
+        cameraImageCode = requestCode
+        if (checkForPermission()) {
+            val values = ContentValues()
+            values.put(MediaStore.Images.Media.TITLE, "New Picture")
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -326,23 +501,221 @@ class BuyingActivity : AppCompatActivity() {
                         pan_card.setImageBitmap(thumbnail)
                         documentsPathList[2] = imageurl
                     }
+                    Constants.SELFIE_PIC_REQUEST -> {
+                        documentsPathList[3] = imageurl
+                        selfieDialog.setImage(thumbnail)
+                    }
+                    Constants.PASSBOOK_PIC_REQUEST -> {
+                        documentsPathList[4] = imageurl
+                        passbook.setImageBitmap(thumbnail)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
         }
-
-//        val image = data?.extras?.get("data") as Bitmap? ?: return
-
     }
 
-    private fun showAlert(message: String) {
+    private fun showAlert(message: String, setIcon: Boolean = true, onDone: () -> Unit = {}) {
         val dialog = CustomAlertDialog().apply {
             setMessage(message)
-            setIcon(R.drawable.ic_warning)
+            setSingleButton(true)
+            if (setIcon)
+                setIcon(R.drawable.ic_warning)
+            setDismissListener(object : CustomDialogListener {
+                override fun onPositiveClicked() {
+                    onDone.invoke()
+                }
+            })
         }
         dialog.show(supportFragmentManager, "validation_alert")
         return
     }
+
+
+    private fun checkForPermission(): Boolean {
+        return if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this, perms, permsRequestCode)
+            false
+        } else {
+            true
+        }
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            permsRequestCode -> {
+                if (grantResults.isEmpty())
+                    return
+                val locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                val storageAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED
+                if (locationAccepted && cameraAccepted && storageAccepted) {
+                    openCamera(cameraImageCode)
+                } else {
+                    showToast("Need all permissions")
+                }
+            }
+
+        }
+
+    }
+
+    private fun sendCustomerRequest() {
+        if (!isNetworkAvailable()) {
+            val dialog = CustomAlertDialog().apply {
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
+            return
+        }
+        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+
+
+        val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
+        val p_id = RequestBody.create(okhttp3.MultipartBody.FORM, productId.toString())
+        val dobValue = RequestBody.create(okhttp3.MultipartBody.FORM, myCalendar.time.toString())
+        val genderText = RequestBody.create(okhttp3.MultipartBody.FORM, gender.selectedItem.toString())
+        val c_addr = RequestBody.create(okhttp3.MultipartBody.FORM, current_address.text.toString())
+        val p_addr = RequestBody.create(okhttp3.MultipartBody.FORM, permanent_address.text.toString())
+        val pin = RequestBody.create(okhttp3.MultipartBody.FORM, pin_codes.selectedItem.toString())
+        val residence = RequestBody.create(okhttp3.MultipartBody.FORM, residence_type.selectedItem.toString())
+        val aadhaar = RequestBody.create(okhttp3.MultipartBody.FORM, u_aadhaar.text.toString())
+        val pan = RequestBody.create(okhttp3.MultipartBody.FORM, u_pan.text.toString())
+        val empType = RequestBody.create(okhttp3.MultipartBody.FORM, empolyment_type.selectedItem.toString())
+        val compName = RequestBody.create(okhttp3.MultipartBody.FORM, company_name.text.toString())
+        val m_sal = RequestBody.create(okhttp3.MultipartBody.FORM, monthly_income.text.toString())
+        val a_sal = RequestBody.create(okhttp3.MultipartBody.FORM, annual_income.text.toString())
+        val f_name = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_name.text.toString())
+        val f_number = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_name.text.toString())
+        val g_name = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_name.text.toString())
+        val g_number = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_number.text.toString())
+        val r_code = RequestBody.create(okhttp3.MultipartBody.FORM, referral_code.text.toString())
+
+        compressFiles(this, documentsPathList)
+
+        val a_f_image = File(documentsPathList[0])
+        val a_b_image = File(documentsPathList[1])
+        val p_image = File(documentsPathList[2])
+        val pass_image = File(documentsPathList[4])
+        val s_image = File(documentsPathList[3])
+
+        val a_front = MultipartBody.Part.createFormData(
+            "aadhar_photo_front",
+            a_f_image.name,
+            RequestBody.create(MediaType.parse("image/*"), a_f_image)
+        )
+
+        val a_back = MultipartBody.Part.createFormData(
+            "aadhar_photo_back",
+            a_b_image.name,
+            RequestBody.create(MediaType.parse("image/*"), a_b_image)
+        )
+
+        val pan_front = MultipartBody.Part.createFormData(
+            "pan_photo",
+            p_image.name,
+            RequestBody.create(MediaType.parse("image/*"), p_image)
+        )
+        val pass_front = MultipartBody.Part.createFormData(
+            "bank_passbook_photo",
+            pass_image.name,
+            RequestBody.create(MediaType.parse("image/*"), pass_image)
+        )
+        val selfie_front = MultipartBody.Part.createFormData(
+            "image",
+            s_image.name,
+            RequestBody.create(MediaType.parse("image/*"), s_image)
+        )
+
+
+        val call = ClientAPI.clientAPI.sendCustomerRequest(
+            "Bearer " + appPreferences.getJWTToken(),
+            c_id,
+            p_id,
+            dobValue,
+            genderText,
+            c_addr,
+            p_addr,
+            pin,
+            residence,
+            aadhaar,
+            pan,
+            empType,
+            compName,
+            m_sal,
+            a_sal,
+            f_name,
+            f_number,
+            g_name,
+            g_number,
+            r_code,
+            a_front,
+            a_back,
+            pan_front,
+            pass_front,
+            selfie_front
+        )
+        Log.d(TAG, "Request URL : ${call.request().url()}")
+        call.enqueue(object : Callback<Any> {
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                hideAlert()
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse == null) {
+                        showToast("Please try after sometime")
+                        return
+                    }
+                    /*val jObjError = JSONObject(response.errorBody()!!.string())
+                    Log.d(TAG, "${jObjError.getString("message")}")*/
+                    val dialog = CustomAlertDialog().apply {
+                        setMessage("Your request has been successfully submitted, you can check order status in orders history.")
+                        setSingleButton(true)
+                        isCancelable = false
+                        setDismissListener(object : CustomDialogListener {
+                            override fun onPositiveClicked() {
+                                finishAffinity()
+                                startActivity(Intent(this@BuyingActivity, HomeActivity::class.java))
+                            }
+                        })
+                    }
+                    dialog.show(supportFragmentManager, "select_day_alert")
+                } else {
+                    /*val jObjError = JSONObject(response.errorBody()!!.string())
+                    Log.d(TAG, "${jObjError.getString("message")}")*/
+                    showToast("Please try again")
+
+                }
+
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                hideAlert()
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })
+    }
+
+    private fun hideAlert() {
+        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
+            progressDialog.dismiss()
+        }
+    }
+
 }

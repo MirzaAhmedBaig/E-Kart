@@ -33,7 +33,7 @@
                     android:fontFamily="@font/avenir_next_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_details"/>
+                    android:text="@string/finance_details"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

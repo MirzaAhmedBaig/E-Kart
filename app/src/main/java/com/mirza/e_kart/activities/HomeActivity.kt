@@ -24,35 +24,48 @@ import android.view.MenuItem
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.db.removeAll
+import com.mirza.e_kart.customdialogs.LoadingAlertDialog
+import com.mirza.e_kart.extensions.isNetworkAvailable
+import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.extensions.suggestionList
 import com.mirza.e_kart.fragments.HomeFragment
 import com.mirza.e_kart.fragments.OrderHistoryFragment
 import com.mirza.e_kart.fragments.ReferralFragment
 import com.mirza.e_kart.listeners.CustomDialogListener
-import com.mirza.e_kart.networks.models.UserDetails
+import com.mirza.e_kart.listeners.RefreshProductListener
+import com.mirza.e_kart.networks.ClientAPI
+import com.mirza.e_kart.networks.models.ProductList
+import com.mirza.e_kart.networks.models.ProductModel
 import com.mirza.e_kart.preferences.AppPreferences
-import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
 
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, RefreshProductListener {
 
     private val TAG = HomeActivity::class.java.simpleName
     private val fromStrings = arrayOf("productName")
     private var menuIndex = 0
+    private var productList: ProductList? = null
 
-    private val realm by lazy {
-        Realm.getDefaultInstance()
-    }
-
+    private var homeFragment: HomeFragment? = null
     private val appPreference by lazy {
         AppPreferences(this)
     }
+
+    private val progressDialog by lazy {
+        LoadingAlertDialog()
+    }
+
     private val toInts by lazy {
         IntArray(1).apply {
             set(0, R.id.suggestion_text)
@@ -69,18 +82,16 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
     }
 
-
-    private val suggestionList = listOf(
-        "Bauru", "Sao Paulo", "Sao Paulosdfsd", "Rio de Janeiro",
-        "Bahia", "Mato Grosso", "Minas Gerais",
-        "Tocantins", "Rio Grande do Sul"
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setUpNavigationBar()
-        moveToHomePage()
+        getAllProducts()
+
+        refresh.setOnClickListener {
+            refresh.visibility = View.GONE
+            getAllProducts()
+        }
     }
 
     override fun onResume() {
@@ -88,18 +99,22 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.menu.getItem(menuIndex).isChecked = true
     }
 
-
+    private var isBackPressed = false
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            if (isBackPressed)
+                super.onBackPressed()
+            else {
+                showToast("Press again to exit")
+                isBackPressed = true
+            }
         }
 
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "onNavigationItemSelected")
         when (item.itemId) {
             R.id.nav_home -> {
                 moveToHomePage()
@@ -157,6 +172,20 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(TAG, "Query : $query")
+                query?.let {
+                    val results = getMatchingItems(it)
+                    if (results != null) {
+                        Intent(this@HomeActivity, SearchResultActivity::class.java).apply {
+                            putExtra("productList", results).also {
+                                startActivity(it)
+                            }
+                        }
+
+                    } else {
+                        showAlert("No item found")
+                    }
+                }
+
                 /*if (!searchView.isIconified) {
                     searchView.isIconified = true
                 }*/
@@ -205,8 +234,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun setUserProfile(view: View) {
-        val userDetails = realm.where(UserDetails::class.java).findFirst()
-        view.user_email.text = appPreference.getUserId()
+        view.user_email.text = appPreference.getEmail()
         view.user_name.text = appPreference.getUserName()
         view.user_image.setImageResource(R.drawable.ic_person)
     }
@@ -215,7 +243,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
         if (fragment is HomeFragment)
             return
-        supportFragmentManager.beginTransaction().replace(R.id.main_layout, HomeFragment(), "home_fragment").commit()
+        supportFragmentManager.beginTransaction().replace(R.id.main_layout, homeFragment!!, "home_fragment").commit()
         menuIndex = 0
     }
 
@@ -276,7 +304,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setSingleButton(false)
                 setDismissListener(object : CustomDialogListener {
                     override fun onPositiveClicked() {
-                        removeAll()
                         appPreference.deleteAll()
                         startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                         finishAffinity()
@@ -291,5 +318,110 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         dialog.show(supportFragmentManager, "hi_how")
 
+    }
+
+    private fun loadProducts() {
+        nav_view.visibility = View.VISIBLE
+        main_content.visibility = View.VISIBLE
+        homeFragment = HomeFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable("productList", productList)
+            }
+            setRefreshingListener(this@HomeActivity)
+        }
+        moveToHomePage()
+
+    }
+
+
+    private fun getAllProducts(isFromHome: Boolean = true) {
+        refresh.visibility = View.GONE
+        if (!isNetworkAvailable()) {
+            if (homeFragment == null) {
+                refresh.visibility = View.VISIBLE
+                refresh.bringToFront()
+            }
+            homeFragment?.stopRefreshing()
+            val dialog = CustomAlertDialog().apply {
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
+
+            return
+        }
+//        if (isFromHome)
+        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        val call = ClientAPI.clientAPI.getProducts("Bearer " + appPreference.getJWTToken())
+        Log.d(TAG, "Request URL : ${call.request().url()}")
+        call.enqueue(object : Callback<ProductList> {
+            override fun onResponse(call: Call<ProductList>, response: Response<ProductList>) {
+//                if (isFromHome)
+                hideAlert()
+                if (response.isSuccessful) {
+                    val productResponse = response.body()
+                    if (productResponse == null) {
+                        showToast("Please try after sometime")
+                        return
+                    }
+                    productList = productResponse
+                    suggestionList.clear()
+                    productList?.product?.forEach {
+                        suggestionList.add(it.name)
+                    }
+                    loadProducts()
+                } else {
+                    try {
+                        val jObjError = JSONObject(response.errorBody()!!.string())
+                        showToast(jObjError.getString("error"))
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Error" + e.message)
+                        showToast("ServerError!")
+                        e.printStackTrace()
+                    }
+                }
+
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<ProductList>, t: Throwable) {
+                hideAlert()
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })
+    }
+
+    private fun hideAlert() {
+        homeFragment?.stopRefreshing()
+        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
+            progressDialog.dismiss()
+        }
+    }
+
+
+    private fun getMatchingItems(queryText: String): ProductList? {
+        val list = productList?.product?.filter { it.name.contains(queryText) }
+        return if (list != null && list.isNotEmpty()) {
+            ProductList(ArrayList<ProductModel>().apply {
+                addAll(list)
+            })
+        } else {
+            null
+        }
+    }
+
+    private fun showAlert(message: String) {
+        val dialog = CustomAlertDialog().apply {
+            setMessage(message)
+            setSingleButton(true)
+        }
+        dialog.show(supportFragmentManager, "validation_alert")
+        return
+    }
+
+    override fun onReferesh() {
+        getAllProducts()
     }
 }

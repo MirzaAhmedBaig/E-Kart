@@ -1,3 +1,4 @@
+/*
 package com.mirza.e_kart.db
 
 import com.mirza.e_kart.networks.models.UserDetails
@@ -21,4 +22,4 @@ fun removeAll() {
         realm.where(UserDetails::class.java).findAll().deleteAllFromRealm()
     }
 
-}
+}*/

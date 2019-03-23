@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/order_details_layout"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/product_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/product_name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/product_sub_title_text"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"/>
+
+        <TextView
+                android:id="@+id/product_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/price"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/product_name"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline" android:layout_marginTop="16dp"/>
+
+        <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@mipmap/mobile_image"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" android:layout_marginStart="8dp"
+                app:layout_constraintDimensionRatio="1:1"/>
+        <View
+                android:id="@+id/v1"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="@color/hint_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/thumbnail"/>
+
+
+        <ProgressBar
+                android:id="@+id/vertical_progressbar"
+                android:layout_width="2dp"
+                android:layout_height="200dp"
+                android:max="100"
+                android:progress="50"
+                android:rotation="180"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/progressbar_states"
+                app:layout_constraintTop_toBottomOf="@+id/v1"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="24dp" android:layout_marginTop="16dp"/>
+
+        <View
+                android:id="@+id/requested_dot"
+                android:background="@drawable/selected_dot"
+                android:layout_width="10dp" android:layout_height="10dp"
+                app:layout_constraintTop_toTopOf="@+id/vertical_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/vertical_progressbar"
+                app:layout_constraintEnd_toEndOf="@+id/vertical_progressbar"
+                app:layout_constraintBottom_toTopOf="@+id/vertical_progressbar"/>
+        <View
+                android:id="@+id/approved_dot"
+                android:background="@drawable/selected_dot"
+                android:layout_width="10dp" android:layout_height="10dp"
+                app:layout_constraintTop_toTopOf="@+id/vertical_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/vertical_progressbar"
+                app:layout_constraintEnd_toEndOf="@+id/vertical_progressbar"
+                app:layout_constraintBottom_toBottomOf="@+id/delivered_dot" app:layout_constraintHorizontal_bias="0.6"/>
+        <View
+                android:id="@+id/delivered_dot"
+                android:background="@drawable/unselected_dot"
+                android:layout_width="10dp" android:layout_height="10dp"
+                app:layout_constraintStart_toStartOf="@+id/vertical_progressbar"
+                app:layout_constraintEnd_toEndOf="@+id/vertical_progressbar"
+                app:layout_constraintBottom_toBottomOf="@+id/vertical_progressbar"
+                app:layout_constraintTop_toBottomOf="@+id/vertical_progressbar"/>
+
+
+        <TextView
+                android:id="@+id/request_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Requested"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="@+id/requested_dot"
+                app:layout_constraintBottom_toBottomOf="@+id/requested_dot"
+                app:layout_constraintStart_toEndOf="@+id/requested_dot"/>
+
+        <TextView
+                android:id="@+id/request_date"
+                android:layout_width="wrap_content"
+                android:layout_height="23dp"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Mon, 32st Dec '19"
+                android:textColor="@color/hint_color"
+                android:textSize="@dimen/small_text"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/request_text"
+                app:layout_constraintStart_toStartOf="@+id/request_text"/>
+
+
+        <TextView
+                android:id="@+id/approved_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Approved"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="@+id/approved_dot"
+                app:layout_constraintStart_toEndOf="@+id/approved_dot"/>
+
+        <TextView
+                android:id="@+id/approved_date"
+                android:layout_width="wrap_content"
+                android:layout_height="23dp"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Mon, 32st Dec '19"
+                android:textColor="@color/hint_color"
+                android:textSize="@dimen/small_text"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/approved_text"
+                app:layout_constraintStart_toStartOf="@+id/approved_text"/>
+
+
+        <TextView
+                android:id="@+id/delivered_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Delivered"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="@+id/delivered_dot"
+                app:layout_constraintStart_toEndOf="@+id/delivered_dot"/>
+
+        <TextView
+                android:id="@+id/delivered_date"
+                android:layout_width="wrap_content"
+                android:layout_height="23dp"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="Mon, 32st Dec '19"
+                android:textColor="@color/hint_color"
+                android:textSize="@dimen/small_text"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/delivered_text"
+                app:layout_constraintStart_toStartOf="@+id/delivered_text"/>
+        <View
+                android:id="@+id/v2"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="@color/hint_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/delivered_date"
+        />
+
+        <TextView
+                android:id="@+id/shipping_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/shipping_details"
+                android:textColor="@color/black"
+                android:textSize="@dimen/product_sub_title_text"
+                android:visibility="visible"
+                android:textAllCaps="true"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/v2" android:layout_marginTop="16dp"/>
+
+        <TextView
+                android:id="@+id/customer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/my_name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size"
+                android:visibility="visible"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shipping_text" android:layout_marginTop="8dp"/>
+
+        <TextView
+                android:id="@+id/customer_address"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/address"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customer_name" android:layout_marginTop="8dp"/>
+
+        <View
+                android:id="@+id/v3"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="@color/hint_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/customer_address"
+        />
+
+        <!--<TextView
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_medium"
+                android:text="@string/price_details"
+                android:textColor="@color/black"
+                android:textSize="@dimen/product_sub_title_text"
+                android:visibility="visible"
+                android:textAllCaps="true"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/v3" android:layout_marginTop="8dp"
+        />-->
+
+
+        <android.support.constraint.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline"
+                app:layout_constraintGuide_percent="0.75" android:orientation="vertical"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

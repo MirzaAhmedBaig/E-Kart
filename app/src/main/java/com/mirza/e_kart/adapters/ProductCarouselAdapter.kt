@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
+import com.mirza.e_kart.listeners.ImageSliderListener
+import com.mirza.e_kart.networks.MConfig
 
 
 /**
@@ -17,7 +19,11 @@ import com.mirza.e_kart.R
  * mirza@avantari.org
  */
 
-class ProductCarouselAdapter(private val context: Context, val imagePaths: ArrayList<String>) : PagerAdapter() {
+class ProductCarouselAdapter(
+    private val context: Context,
+    val imagePaths: ArrayList<String>,
+    val sliderListener: ImageSliderListener?
+) : PagerAdapter() {
     private val TAG = ProductCarouselAdapter::class.java.simpleName
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         Log.d(TAG, "instantiateItem")
@@ -48,8 +54,11 @@ class ProductCarouselAdapter(private val context: Context, val imagePaths: Array
     private fun instantiateChild(position: Int, viewGroup: ViewGroup) {
         val imageView = viewGroup.findViewById<ImageView>(R.id.carousel_image)
         Glide.with(imageView.context)
-            .load(imagePaths[position])
+            .load(MConfig.IMAGE_BASE_URL + imagePaths[position])
             .into(imageView)
+        imageView.setOnClickListener {
+            sliderListener?.onItemClicked(position)
+        }
     }
 
 }

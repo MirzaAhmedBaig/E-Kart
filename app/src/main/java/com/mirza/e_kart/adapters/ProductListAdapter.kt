@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
+import com.mirza.e_kart.networks.MConfig
 import com.mirza.e_kart.networks.models.ProductModel
 
 class ProductListAdapter(val dataArray: ArrayList<ProductModel>) :
@@ -42,7 +43,7 @@ class ProductListAdapter(val dataArray: ArrayList<ProductModel>) :
 
         fun onBind(productInfo: ProductModel) {
             Glide.with(thumbnailImage.context)
-                .load(productInfo.image)
+                .load(MConfig.IMAGE_BASE_URL + productInfo.image)
                 .into(thumbnailImage)
             productName.text = productInfo.name
             productPrice.text = "\u20B9${productInfo.price}"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">E-Kart</string>
+    <string name="app_name">NFPL</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -64,8 +64,8 @@
     <string name="permanent_address">Permanent Address</string>
     <string name="aadhaar_card_number">Aadhaar Card Number</string>
     <string name="pan_card_number">Pan Card Number</string>
-    <string name="company_name_if_any">Company Name if any</string>
-    <string name="gross_monthly_income">Gross Monthly Income</string>
+    <string name="company_name_if_any">Company Name</string>
+    <string name="gross_monthly_income">Monthly Income</string>
     <string name="annual_income">Annual Income</string>
     <string name="family_and_guarantor_details">Family and Guarantor Details</string>
     <string name="family_member_name">Family Member Name</string>
@@ -78,4 +78,22 @@
     <string name="front_image">Front Image</string>
     <string name="back_image">Back Image</string>
     <string name="take_image_of_pan_card">Take image of Pan card</string>
+    <string name="take_image_of_passbook">Take image of Bank Passbook\'s front page</string>
+    <string name="referece_code">Reference Code</string>
+    <string name="selfie_message">\"For validation purpose you need to take your selfie so that we can insure your
+        presence at the time of purchase\"
+    </string>
+    <string name="retry">Retry</string>
+    <string name="refer_msg">Share this app with other and you will earn points</string>
+    <string name="invite">Invite and Earn</string>
+    <string name="is_your_referral_code">is your referral code</string>
+    <string name="people_referred_you">People who referred you</string>
+    <string name="shipping_details">Shpping Details</string>
+    <string name="address">Address</string>
+    <string name="price_details">Price Details</string>
+    <string name="order_details">Order Details</string>
+    <string name="search_results">Search Results</string>
+    <string name="request_otp">Request OTP</string>
+    <string name="product_details">Product Details</string>
+    <string name="finance_details">Finance Details</string>
 </resources>

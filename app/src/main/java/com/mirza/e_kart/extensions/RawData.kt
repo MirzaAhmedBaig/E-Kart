@@ -1,7 +1,5 @@
 package com.mirza.e_kart.extensions
 
-import java.util.*
-
 val genderList = ArrayList<String>().apply {
     add("Gender")
     add("Male")
@@ -33,4 +31,6 @@ val employmentType = ArrayList<String>().apply {
     add("Self Employee")
     add("Salaried")
 }
+
+val suggestionList = ArrayList<String>()
 

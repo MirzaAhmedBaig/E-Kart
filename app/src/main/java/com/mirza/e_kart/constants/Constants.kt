@@ -15,4 +15,6 @@ object Constants {
     const val AADHAAR_FRONT_PIC_REQUEST = 401
     const val AADHAAR_BACK_PIC_REQUEST = 402
     const val PAN_CARD_PIC_REQUEST = 403
+    const val SELFIE_PIC_REQUEST = 404
+    const val PASSBOOK_PIC_REQUEST = 405
 }
