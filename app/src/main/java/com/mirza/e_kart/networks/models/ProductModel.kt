@@ -15,5 +15,5 @@ data class ProductModel(
     val price: Double,
     val created_at: Long,
     val updated_at: Long,
-    val specification: String
+    val specification: String?
 ) : Parcelable

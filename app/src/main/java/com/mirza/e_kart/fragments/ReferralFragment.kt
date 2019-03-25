@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.ReferralListAdapter
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
@@ -23,7 +22,6 @@ import com.mirza.e_kart.networks.models.UserDetails
 import com.mirza.e_kart.preferences.AppPreferences
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_referral.*
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -93,14 +91,7 @@ class ReferralFragment : Fragment() {
                     setReferralAdapter(productResponse.customer)
 
                 } else {
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        showToast(jObjError.getString("error"))
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Error" + e.message)
-                        showToast("ServerError!")
-                        e.printStackTrace()
-                    }
+                    showToast("Internal server error, please try again")
                 }
 
                 Log.d(TAG, "Response Code : ${response.code()}")

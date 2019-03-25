@@ -18,7 +18,6 @@ import com.mirza.e_kart.networks.models.ProductModel
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_product_details.*
 import kotlinx.android.synthetic.main.product_details_contents.*
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,7 +85,9 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
         product_interest_text.text = "Get this item at ${productDetails.interest}% interest rate"
         product_description.text = productDetails.description
         product_details.settings.javaScriptEnabled = true
-        product_details.loadData(productDetails.specification, "text/html", "UTF-8")
+        productDetails.specification?.let {
+            product_details.loadData(productDetails.specification, "text/html", "UTF-8")
+        }
     }
 
     private fun setGalleryAdapter(list: ArrayList<String>) {
@@ -129,14 +130,7 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
                     setProductDetails()
 
                 } else {
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        showToast(jObjError.getString("error"))
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Error" + e.message)
-                        showToast("ServerError!")
-                        e.printStackTrace()
-                    }
+                    showToast("Internal server error, please try again")
                 }
 
                 Log.d(TAG, "Response Code : ${response.code()}")

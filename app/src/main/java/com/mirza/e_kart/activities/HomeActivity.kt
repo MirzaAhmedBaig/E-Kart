@@ -41,7 +41,6 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -372,14 +371,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     loadProducts()
                 } else {
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        showToast(jObjError.getString("error"))
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Error" + e.message)
-                        showToast("ServerError!")
-                        e.printStackTrace()
+                    if (homeFragment == null) {
+                        refresh.visibility = View.VISIBLE
+                        refresh.bringToFront()
                     }
+                    showToast("Internal server error, please try again")
                 }
 
                 Log.d(TAG, "Response Code : ${response.code()}")

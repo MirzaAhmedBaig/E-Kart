@@ -206,14 +206,12 @@ class RegistrationActivity : AppCompatActivity() {
                             u_password.error = "Invalid password"
                         }
                         response.code() == 404 -> {
-                            val jObjError = JSONObject(response.errorBody()!!.string())
-                            u_email.requestFocus()
-                            u_email.error = jObjError.getString("error")
+                            /* val jObjError = JSONObject(response.errorBody()!!.string())
+                             u_email.requestFocus()
+                             u_email.error = jObjError.getString("error")*/
                         }
                         response.code() == 500 -> {
-                            val jObjError = JSONObject(response.errorBody()!!.string())
-                            u_email.requestFocus()
-                            u_email.error = jObjError.getString("error")
+                            showToast("Internal server error, please try again")
                         }
                         else -> {
                             try {

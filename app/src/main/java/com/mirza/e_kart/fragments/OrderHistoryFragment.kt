@@ -20,7 +20,6 @@ import com.mirza.e_kart.networks.models.OrderedProduct
 import com.mirza.e_kart.preferences.AppPreferences
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_order_history.*
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -105,20 +104,13 @@ class OrderHistoryFragment : Fragment() {
                         showToast("NO referral found")
                         return
                     }
-                    setOrdersList(productResponse.prod)
+                    setOrdersList(productResponse.product)
 
                 } else {
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        showToast(jObjError.getString("error"))
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Error" + e.message)
-                        showToast("ServerError!")
-                        e.printStackTrace()
-                    }
+                    showToast("Internal server error, please try again")
                 }
 
-                Log.d(TAG, "Response Code : ${response.code()}")
+                Log.d(TAG, "Response Code : ${response.code()} ${response.isSuccessful}")
             }
 
             override fun onFailure(call: Call<OrderHistoryModel>, t: Throwable) {

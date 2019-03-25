@@ -695,9 +695,7 @@ class BuyingActivity : AppCompatActivity() {
                     }
                     dialog.show(supportFragmentManager, "select_day_alert")
                 } else {
-                    /*val jObjError = JSONObject(response.errorBody()!!.string())
-                    Log.d(TAG, "${jObjError.getString("message")}")*/
-                    showToast("Please try again")
+                    showToast("Internal server error, please try again")
 
                 }
 
