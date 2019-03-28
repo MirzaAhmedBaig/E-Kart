@@ -43,7 +43,7 @@ fun compressFiles(context: Context, paths: Array<String?>) {
 
 fun timestampToDate(s: Long): String {
     return try {
-        val sdf = SimpleDateFormat("DDD, mm-MMM 'yy")
+        val sdf = SimpleDateFormat("D, mm-MMM yyyy")
         val netDate = Date(s)
         sdf.format(netDate)
     } catch (e: Exception) {

@@ -17,10 +17,7 @@ import android.view.KeyEvent
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
-import com.mirza.e_kart.extensions.isEmailValid
-import com.mirza.e_kart.extensions.isNetworkAvailable
-import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginResponse
 import com.mirza.e_kart.networks.models.SignupModel
@@ -35,10 +32,6 @@ import retrofit2.Response
 class RegistrationActivity : AppCompatActivity() {
 
     private val TAG = RegistrationActivity::class.java.simpleName
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
-    }
     private val appPreferences by lazy {
         AppPreferences(this)
     }
@@ -113,9 +106,9 @@ class RegistrationActivity : AppCompatActivity() {
             return false
         }
 
-        if (u_number.text.toString().trim().length != 10 || u_number.text.toString().contains("+")) {
+        if (!u_number.text.toString().matches(Regex("^[6-9][0-9]{9}$"))) {
             u_number.requestFocus()
-            u_number.error = "Enter mobile number"
+            u_number.error = "Enter valid mobile number"
             return false
         }
 
@@ -186,12 +179,12 @@ class RegistrationActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call = ClientAPI.clientAPI.doSignUp(userDetails)
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse == null) {
@@ -230,18 +223,13 @@ class RegistrationActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
         })
     }
 
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
 }
 
 

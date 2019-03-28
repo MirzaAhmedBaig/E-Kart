@@ -8,8 +8,9 @@ import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.ProductCarouselAdapter
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
+import com.mirza.e_kart.extensions.hideLoadingAlert
 import com.mirza.e_kart.extensions.isNetworkAvailable
+import com.mirza.e_kart.extensions.showLoadingAlert
 import com.mirza.e_kart.extensions.showToast
 import com.mirza.e_kart.listeners.ImageSliderListener
 import com.mirza.e_kart.networks.ClientAPI
@@ -28,10 +29,6 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
 
     private val appPreferences by lazy {
         AppPreferences(this)
-    }
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
     }
 
     private val productDetails by lazy {
@@ -113,18 +110,19 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call = ClientAPI.clientAPI.getProductImages("Bearer " + appPreferences.getJWTToken(), productDetails.id)
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<ProductImages> {
             override fun onResponse(call: Call<ProductImages>, response: Response<ProductImages>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val productResponse = response.body()
                     if (productResponse == null) {
                         showToast("ServerError")
                         return
                     }
+                    Log.d(TAG, "Response Code : ${productResponse.images.size} id : ${productDetails.id}")
                     setProductCarousel(productResponse.images)
                     setListeners()
                     setProductDetails()
@@ -137,16 +135,12 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
             }
 
             override fun onFailure(call: Call<ProductImages>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
         })
     }
 
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
+
 }

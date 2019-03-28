@@ -50,7 +50,7 @@ class OrderListAdapter(val dataArray: ArrayList<OrderedProduct>) :
             Glide.with(thumbnailImage.context)
                 .load(MConfig.IMAGE_BASE_URL + orderedProduct.image)
                 .into(thumbnailImage)
-            productName.text = orderedProduct.product_name
+            productName.text = orderedProduct.name
             productPrice.text = "\u20B9" + orderedProduct.price.toString()
             productStatus.text = getStatusByCode(orderedProduct.status)
         }

@@ -20,6 +20,10 @@ interface NetworkManager {
     @POST(MConfig.PRODUCTS)
     fun getProducts(@Header("Authorization") bearer: String): Call<ProductList>
 
+    @Headers("Content-Type: application/json")
+    @POST(MConfig.CATEGORIES)
+    fun getCategories(@Header("Authorization") bearer: String): Call<CategoriesModel>
+
     @FormUrlEncoded
     @POST(MConfig.PRODUCT_IMAGES)
     fun getProductImages(@Header("Authorization") bearer: String, @Field("id") id: Int): Call<ProductImages>

@@ -14,10 +14,7 @@ import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
-import com.mirza.e_kart.extensions.isEmailValid
-import com.mirza.e_kart.extensions.isNetworkAvailable
-import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginModel
 import com.mirza.e_kart.networks.models.LoginResponse
@@ -34,16 +31,9 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
 
     private val TAG = LoginActivity::class.java.simpleName
-    private val background by lazy {
-        findViewById<View>(R.id.login_layout)
-    }
 
     private val appPreferences by lazy {
         AppPreferences(this)
-    }
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,16 +100,12 @@ class LoginActivity : AppCompatActivity() {
         forgotPasswordDialog.show(supportFragmentManager, "hi_how")
     }
 
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
 
     private fun completedLogin(response: LoginResponse) {
         appPreferences.setUser(response.user)
         appPreferences.setLoggedIn(true)
         appPreferences.setEmail(response.user.email)
+        appPreferences.setReferId(response.user.reference_code)
         appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
         appPreferences.setJWTToken(response.access_token)
         startActivity(Intent(this, HomeActivity::class.java))
@@ -137,12 +123,12 @@ class LoginActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call = ClientAPI.clientAPI.doLogin(loginModel)
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse == null) {
@@ -157,9 +143,9 @@ class LoginActivity : AppCompatActivity() {
                             u_password.error = "Invalid password"
                         }
                         response.code() == 404 -> {
-                            /*val jObjError = JSONObject(response.errorBody()!!.string())
                             u_email.requestFocus()
-                            u_email.error = jObjError.getString("error")*/
+                            u_email.error = "User not found"
+//                            showAlert("User not found")
                         }
                         response.code() == 500 -> {
                             showToast("Internal server error, please try again")
@@ -181,7 +167,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }

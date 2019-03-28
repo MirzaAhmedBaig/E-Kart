@@ -65,7 +65,6 @@
                 android:layout_width="2dp"
                 android:layout_height="200dp"
                 android:max="100"
-                android:progress="50"
                 android:rotation="180"
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:progressDrawable="@drawable/progressbar_states"
@@ -83,7 +82,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/vertical_progressbar"/>
         <View
                 android:id="@+id/approved_dot"
-                android:background="@drawable/selected_dot"
+                android:background="@drawable/unselected_dot"
                 android:layout_width="10dp" android:layout_height="10dp"
                 app:layout_constraintTop_toTopOf="@+id/vertical_progressbar"
                 app:layout_constraintStart_toStartOf="@+id/vertical_progressbar"
@@ -220,7 +219,7 @@
         <TextView
                 android:id="@+id/customer_address"
                 android:layout_width="wrap_content"
-                android:layout_height="28dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/avenir_next_medium"
                 android:text="@string/address"
                 android:textColor="@color/black"

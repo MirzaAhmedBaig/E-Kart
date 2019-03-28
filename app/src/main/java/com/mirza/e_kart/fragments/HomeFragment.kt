@@ -10,9 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.mirza.e_kart.R
 import com.mirza.e_kart.activities.ProductDetailsActivity
+import com.mirza.e_kart.adapters.CategoryAdapter
 import com.mirza.e_kart.adapters.ProductListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
 import com.mirza.e_kart.listeners.RefreshProductListener
+import com.mirza.e_kart.networks.models.CategoriesModel
+import com.mirza.e_kart.networks.models.Category
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
 import isNetworkAvailable
@@ -32,6 +35,10 @@ class HomeFragment : Fragment() {
         (arguments?.getParcelable("productList") as ProductList?)?.product
     }
 
+    private val categories by lazy {
+        (arguments?.getParcelable("categories") as CategoriesModel?)?.category
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +48,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        categories?.let {
+            setCategoriesList(it)
+
+        }
         productList?.let {
             setProductList(it)
 
@@ -50,12 +61,12 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        stopRefreshing()
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     private fun setRefreshLayout() {
         swipe_refresh_layout.setOnRefreshListener {
-            stopRefreshing()
+            swipe_refresh_layout?.isRefreshing = false
             refreshProductListener?.onReferesh()
         }
     }
@@ -84,6 +95,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setCategoriesList(categories: ArrayList<Category>) {
+        with(category_list) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = CategoryAdapter(categories)
+
+            addOnItemTouchListener(
+                RecyclerItemClickListener(
+                    context,
+                    this,
+                    object : RecyclerItemClickListener.OnItemClickListener {
+                        override fun onItemClick(view: View, position: Int) {
+                            Log.d(TAG, "Product at $position")
+                        }
+
+                    })
+            )
+        }
+    }
+
     private fun startProductDetailsPage(productDetails: ProductModel) {
         Intent(context, ProductDetailsActivity::class.java).apply {
             putExtra("productDetails", productDetails)
@@ -94,9 +124,5 @@ class HomeFragment : Fragment() {
 
     fun setRefreshingListener(refreshProductListener: RefreshProductListener) {
         this.refreshProductListener = refreshProductListener
-    }
-
-    fun stopRefreshing() {
-        swipe_refresh_layout?.isRefreshing = false
     }
 }

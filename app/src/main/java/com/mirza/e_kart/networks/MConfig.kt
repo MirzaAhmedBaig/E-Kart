@@ -9,6 +9,7 @@ class MConfig {
         const val LOGIN = "login"
         const val SIGNUP = "signup"
         const val PRODUCTS = "product"
+        const val CATEGORIES = "category"
         const val PRODUCT_IMAGES = "images"
         const val CUSTOMER_REQUEST = "customer_request"
         const val REFERRAL_LIST = "referal"

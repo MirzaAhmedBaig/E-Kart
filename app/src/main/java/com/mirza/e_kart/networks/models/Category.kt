@@ -5,18 +5,15 @@ import kotlinx.android.parcel.Parcelize
 
 
 /**
- * Created by Mirza Ahmed Baig on 19/03/19.
+ * Created by Mirza Ahmed Baig on 28/03/19.
  * Avantari Technologies
  * mirza@avantari.org
  */
 @Parcelize
-data class OrderedProduct(
+data class Category(
     val id: Int,
     val name: String,
-    val price: Double,
     val image: String,
-    val status: Int,
-    val current_address: String,
-    var created_at: Long,
-    var updated_at: Long
+    val created_at: String,
+    val updated_at: String
 ) : Parcelable

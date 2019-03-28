@@ -13,16 +13,17 @@ import com.mirza.e_kart.activities.OrderDetailsActivity
 import com.mirza.e_kart.adapters.OrderListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.OrderHistoryModel
 import com.mirza.e_kart.networks.models.OrderedProduct
 import com.mirza.e_kart.preferences.AppPreferences
+import hideLoadingAlert
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_order_history.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import showLoadingAlert
 import showToast
 
 class OrderHistoryFragment : Fragment() {
@@ -34,10 +35,6 @@ class OrderHistoryFragment : Fragment() {
 
     private val appPreferences by lazy {
         AppPreferences(context!!)
-    }
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
     }
 
     override fun onCreateView(
@@ -91,19 +88,21 @@ class OrderHistoryFragment : Fragment() {
             dialog.show(fragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(fragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call =
             ClientAPI.clientAPI.getOrderHistory("Bearer " + appPreferences.getJWTToken(), appPreferences.getUser().id)
         Log.d(TAG, "Request URL : ${call.request().url()} , ID : ${appPreferences.getUser().id}")
         call.enqueue(object : Callback<OrderHistoryModel> {
             override fun onResponse(call: Call<OrderHistoryModel>, response: Response<OrderHistoryModel>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val productResponse = response.body()
                     if (productResponse == null) {
-                        showToast("NO referral found")
+                        showToast("NO orders found")
                         return
                     }
+                    Log.d(TAG, "Response ${productResponse.product}")
+                    Log.d(TAG, "Size ${productResponse.product.size}")
                     setOrdersList(productResponse.product)
 
                 } else {
@@ -114,16 +113,10 @@ class OrderHistoryFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<OrderHistoryModel>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
         })
-    }
-
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
     }
 }

@@ -1,12 +1,7 @@
 package com.mirza.e_kart.fragments
 
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Environment
 import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,28 +10,24 @@ import android.view.ViewGroup
 import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.ReferralListAdapter
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.ReferralModel
 import com.mirza.e_kart.networks.models.UserDetails
 import com.mirza.e_kart.preferences.AppPreferences
+import hideLoadingAlert
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_referral.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import shareApp
+import showLoadingAlert
 import showToast
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
 class ReferralFragment : Fragment() {
     private val TAG = ReferralFragment::class.java.simpleName
     private val appPreferences by lazy {
         AppPreferences(context!!)
-    }
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
     }
 
     override fun onCreateView(
@@ -75,13 +66,13 @@ class ReferralFragment : Fragment() {
             dialog.show(fragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(fragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call =
             ClientAPI.clientAPI.getReferrals("Bearer " + appPreferences.getJWTToken(), appPreferences.getUser().id)
         Log.d(TAG, "Request URL : ${call.request().url()} , ID : ${appPreferences.getUser().id}")
         call.enqueue(object : Callback<ReferralModel> {
             override fun onResponse(call: Call<ReferralModel>, response: Response<ReferralModel>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val productResponse = response.body()
                     if (productResponse == null) {
@@ -98,7 +89,7 @@ class ReferralFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<ReferralModel>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
@@ -106,40 +97,4 @@ class ReferralFragment : Fragment() {
     }
 
 
-    private fun shareApp() {
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.e_kart)
-        val path =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Share.png"
-        val out: OutputStream
-        val file = File(path)
-        try {
-            out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val bmpUri = FileProvider.getUriForFile(
-            context!!,
-            context!!.packageName + ".my.package.name.provider",
-            file
-        )
-        shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
-        shareIntent.putExtra(
-            Intent.EXTRA_TEXT,
-            "Hey please check this application https://play.google.com/store/apps/details?id=${activity!!.packageName}"
-        )
-        shareIntent.type = "image/png"
-        startActivity(Intent.createChooser(shareIntent, "Share with"))
-    }
-
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
 }

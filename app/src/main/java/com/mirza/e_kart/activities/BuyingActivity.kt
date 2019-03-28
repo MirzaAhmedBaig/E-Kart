@@ -25,7 +25,6 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.SpinnerAdapter
 import com.mirza.e_kart.constants.Constants
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.customdialogs.SelfieDialog
 import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.listeners.CustomDialogListener
@@ -62,12 +61,6 @@ class BuyingActivity : AppCompatActivity() {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog().apply {
-            setMessage("Please waite while we submit your request. It may take few minutes to complete.")
-        }
-    }
 
     private val myCalendar by lazy {
         Calendar.getInstance()
@@ -517,21 +510,7 @@ class BuyingActivity : AppCompatActivity() {
         }
     }
 
-    private fun showAlert(message: String, setIcon: Boolean = true, onDone: () -> Unit = {}) {
-        val dialog = CustomAlertDialog().apply {
-            setMessage(message)
-            setSingleButton(true)
-            if (setIcon)
-                setIcon(R.drawable.ic_warning)
-            setDismissListener(object : CustomDialogListener {
-                override fun onPositiveClicked() {
-                    onDone.invoke()
-                }
-            })
-        }
-        dialog.show(supportFragmentManager, "validation_alert")
-        return
-    }
+
 
 
     private fun checkForPermission(): Boolean {
@@ -583,7 +562,7 @@ class BuyingActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
-        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        showLoadingAlert("Please waite while we submit your request. It may take few minutes to complete.")
 
 
         val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
@@ -673,7 +652,7 @@ class BuyingActivity : AppCompatActivity() {
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse == null) {
@@ -703,17 +682,12 @@ class BuyingActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Any>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
         })
     }
 
-    private fun hideAlert() {
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
 
 }

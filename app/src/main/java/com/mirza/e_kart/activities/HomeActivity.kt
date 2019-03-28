@@ -5,13 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.database.MatrixCursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Environment
 import android.provider.BaseColumns
 import android.support.design.widget.NavigationView
-import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.CursorAdapter
 import android.support.v4.widget.SimpleCursorAdapter
@@ -24,18 +20,13 @@ import android.view.MenuItem
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.LoadingAlertDialog
-import com.mirza.e_kart.extensions.isNetworkAvailable
-import com.mirza.e_kart.extensions.showToast
-import com.mirza.e_kart.extensions.suggestionList
+import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.fragments.HomeFragment
-import com.mirza.e_kart.fragments.OrderHistoryFragment
-import com.mirza.e_kart.fragments.ReferralFragment
 import com.mirza.e_kart.listeners.CustomDialogListener
 import com.mirza.e_kart.listeners.RefreshProductListener
 import com.mirza.e_kart.networks.ClientAPI
+import com.mirza.e_kart.networks.models.CategoriesModel
 import com.mirza.e_kart.networks.models.ProductList
-import com.mirza.e_kart.networks.models.ProductModel
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -44,25 +35,19 @@ import kotlinx.android.synthetic.main.nav_header_main.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, RefreshProductListener {
 
     private val TAG = HomeActivity::class.java.simpleName
     private val fromStrings = arrayOf("productName")
-    private var menuIndex = 0
+    var menuIndex = 0
     private var productList: ProductList? = null
+    private var categories: CategoriesModel? = null
 
-    private var homeFragment: HomeFragment? = null
+    var homeFragment: HomeFragment? = null
     private val appPreference by lazy {
         AppPreferences(this)
-    }
-
-    private val progressDialog by lazy {
-        LoadingAlertDialog()
     }
 
     private val toInts by lazy {
@@ -85,11 +70,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setUpNavigationBar()
-        getAllProducts()
+        getCategories()
 
         refresh.setOnClickListener {
             refresh.visibility = View.GONE
-            getAllProducts()
+            getCategories()
         }
     }
 
@@ -172,7 +157,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(TAG, "Query : $query")
                 query?.let {
-                    val results = getMatchingItems(it)
+                    val results = getMatchingItems(productList, it)
                     if (results != null) {
                         Intent(this@HomeActivity, SearchResultActivity::class.java).apply {
                             putExtra("productList", results).also {
@@ -185,9 +170,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                 }
 
-                /*if (!searchView.isIconified) {
-                    searchView.isIconified = true
-                }*/
                 return false
             }
 
@@ -238,63 +220,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         view.user_image.setImageResource(R.drawable.ic_person)
     }
 
-    private fun moveToHomePage() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
-        if (fragment is HomeFragment)
-            return
-        supportFragmentManager.beginTransaction().replace(R.id.main_layout, homeFragment!!, "home_fragment").commit()
-        menuIndex = 0
-    }
-
-    private fun moveToOrdersPage() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
-        if (fragment is OrderHistoryFragment)
-            return
-        supportFragmentManager.beginTransaction().replace(R.id.main_layout, OrderHistoryFragment(), "home_fragment")
-            .commit()
-        menuIndex = 1
-    }
-
-    private fun moveToReferralPage() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
-        if (fragment is ReferralFragment)
-            return
-        supportFragmentManager.beginTransaction().replace(R.id.main_layout, ReferralFragment(), "home_fragment")
-            .commit()
-        menuIndex = 2
-    }
-
-    private fun shareApp() {
-        val shareIntent = Intent(android.content.Intent.ACTION_SEND)
-        val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.e_kart)
-        val path =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Share.png"
-        val out: OutputStream
-        val file = File(path)
-        try {
-            out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val bmpUri = FileProvider.getUriForFile(
-            this,
-            applicationContext.packageName + ".my.package.name.provider",
-            file
-        )
-        shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
-        shareIntent.putExtra(
-            Intent.EXTRA_TEXT,
-            "Hey please check this application https://play.google.com/store/apps/details?id=$packageName"
-        )
-        shareIntent.type = "image/png"
-        startActivity(Intent.createChooser(shareIntent, "Share with"))
-    }
-
     private fun performLogOut() {
         val innerNavView = nav_view
         val dialog = CustomAlertDialog().apply {
@@ -325,6 +250,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         homeFragment = HomeFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("productList", productList)
+                putParcelable("categories", categories)
             }
             setRefreshingListener(this@HomeActivity)
         }
@@ -332,15 +258,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-
-    private fun getAllProducts(isFromHome: Boolean = true) {
+    private fun getAllProducts() {
         refresh.visibility = View.GONE
         if (!isNetworkAvailable()) {
             if (homeFragment == null) {
                 refresh.visibility = View.VISIBLE
                 refresh.bringToFront()
             }
-            homeFragment?.stopRefreshing()
             val dialog = CustomAlertDialog().apply {
                 setMessage("Please check your internet.")
                 setIcon(R.drawable.ic_warning)
@@ -350,14 +274,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             return
         }
-//        if (isFromHome)
-        progressDialog.show(supportFragmentManager, "loading_alert_dailog")
+        showLoadingAlert()
         val call = ClientAPI.clientAPI.getProducts("Bearer " + appPreference.getJWTToken())
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<ProductList> {
             override fun onResponse(call: Call<ProductList>, response: Response<ProductList>) {
-//                if (isFromHome)
-                hideAlert()
+                hideLoadingAlert()
                 if (response.isSuccessful) {
                     val productResponse = response.body()
                     if (productResponse == null) {
@@ -382,39 +304,62 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onFailure(call: Call<ProductList>, t: Throwable) {
-                hideAlert()
+                hideLoadingAlert()
                 t.printStackTrace()
                 showToast("Network Error!")
             }
         })
     }
 
-    private fun hideAlert() {
-        homeFragment?.stopRefreshing()
-        if (progressDialog.dialog != null && progressDialog.dialog.isShowing) {
-            progressDialog.dismiss()
-        }
-    }
 
+    private fun getCategories() {
+        refresh.visibility = View.GONE
+        if (!isNetworkAvailable()) {
+            if (homeFragment == null) {
+                refresh.visibility = View.VISIBLE
+                refresh.bringToFront()
+            }
+            val dialog = CustomAlertDialog().apply {
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
 
-    private fun getMatchingItems(queryText: String): ProductList? {
-        val list = productList?.product?.filter { it.name.contains(queryText) }
-        return if (list != null && list.isNotEmpty()) {
-            ProductList(ArrayList<ProductModel>().apply {
-                addAll(list)
-            })
-        } else {
-            null
+            return
         }
-    }
+        showLoadingAlert()
+        val call = ClientAPI.clientAPI.getCategories("Bearer " + appPreference.getJWTToken())
+        Log.d(TAG, "Request URL : ${call.request().url()}")
+        call.enqueue(object : Callback<CategoriesModel> {
+            override fun onResponse(call: Call<CategoriesModel>, response: Response<CategoriesModel>) {
+                hideLoadingAlert()
+                if (response.isSuccessful) {
+                    val productResponse = response.body()
+                    if (productResponse == null) {
+                        showToast("Please try after sometime")
+                        return
+                    }
+                    Log.d(TAG, "Response Code : ${response.body()?.category?.size}")
+                    categories = response.body()
+                    getAllProducts()
+                } else {
+                    if (homeFragment == null) {
+                        refresh.visibility = View.VISIBLE
+                        refresh.bringToFront()
+                    }
+                    showToast("Internal server error, please try again")
+                }
 
-    private fun showAlert(message: String) {
-        val dialog = CustomAlertDialog().apply {
-            setMessage(message)
-            setSingleButton(true)
-        }
-        dialog.show(supportFragmentManager, "validation_alert")
-        return
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<CategoriesModel>, t: Throwable) {
+                hideLoadingAlert()
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })
     }
 
     override fun onReferesh() {

@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
 import com.mirza.e_kart.extensions.timestampToDate
@@ -23,11 +24,13 @@ class OrderDetailsActivity : AppCompatActivity() {
         AppPreferences(this)
     }
 
-    private val dotsList = listOf(
-        requested_dot,
-        approved_dot,
-        delivered_dot
-    )
+    private val dotsList by lazy {
+        listOf(
+            requested_dot,
+            approved_dot,
+            delivered_dot
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     }
 
     private fun setDetails() {
-        product_name.text = orderDetails.product_name
+        product_name.text = orderDetails.name
         product_price.text = "\u20B9" + orderDetails.price
         Glide.with(this)
             .load(MConfig.IMAGE_BASE_URL + orderDetails.image)
@@ -61,17 +64,18 @@ class OrderDetailsActivity : AppCompatActivity() {
         if (code in 0..2) {
             vertical_progressbar.progress = 50 * code
             if (code == 2) {
-                approved_date.text = timestampToDate(orderDetails.updated_at)
+                delivered_date.text = timestampToDate(orderDetails.updated_at)
+                delivered_date.visibility = View.VISIBLE
             }
             (0..code)
                 .forEach {
-                    dotsList[it].setBackgroundResource(R.drawable.selected_dot)
+                    dotsList[it]?.setBackgroundResource(R.drawable.selected_dot)
                 }
         } else if (code == 3) {
             vertical_progressbar.progressDrawable.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
             vertical_progressbar.progress = 50
             (0..1).forEach {
-                dotsList[it].setBackgroundResource(R.drawable.rejected_dot)
+                dotsList[it]?.setBackgroundResource(R.drawable.rejected_dot)
             }
             approved_date.text = timestampToDate(orderDetails.updated_at)
             approved_text.text = "Rejected"
