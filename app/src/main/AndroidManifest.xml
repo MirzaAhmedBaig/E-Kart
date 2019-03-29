@@ -16,6 +16,13 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="false"
             android:theme="@style/AppTheme.NoActionBar">
+
+        <receiver android:name=".MySMSBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".activities.SearchResultActivity">
         </activity>
         <activity android:name=".activities.BuyingActivity">

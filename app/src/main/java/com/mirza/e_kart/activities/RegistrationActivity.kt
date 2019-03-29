@@ -27,11 +27,13 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Math.random
 
 
 class RegistrationActivity : AppCompatActivity() {
 
     private val TAG = RegistrationActivity::class.java.simpleName
+
     private val appPreferences by lazy {
         AppPreferences(this)
     }
@@ -82,6 +84,15 @@ class RegistrationActivity : AppCompatActivity() {
             }
         })
 
+
+        request_otp.setOnClickListener {
+            request_otp.isEnabled = false
+            sendOTP()
+            Handler().postDelayed({
+                request_otp.isEnabled = false
+            }, 30000)
+        }
+
     }
 
     private fun performValidation(): Boolean {
@@ -116,6 +127,12 @@ class RegistrationActivity : AppCompatActivity() {
             u_otp.requestFocus()
             u_otp.error = "Enter OTP"
             return false
+        } else {
+            if (!validOTP()) {
+                u_otp.requestFocus()
+                u_otp.error = "Enter valid OTP"
+                return false
+            }
         }
         return true
     }
@@ -228,6 +245,52 @@ class RegistrationActivity : AppCompatActivity() {
                 showToast("Network Error!")
             }
         })
+    }
+
+
+    private val otp: Int = (100000 + random() * 900000).toInt()
+    private fun sendOTP() {
+        val mobileNumber = u_number.text.toString()
+        if (!isNetworkAvailable()) {
+            val dialog = CustomAlertDialog().apply {
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
+            return
+        }
+        showLoadingAlert()
+        val call =
+            ClientAPI.clientAPI.sendOTP(mobileNumber = mobileNumber, msg = "OPT for NFPL account registration is $otp")
+        Log.d(
+            TAG,
+            "Request URL : ${call.request().url()} , Mobile : $mobileNumber Message = OPT for NFPL account registration is $otp"
+        )
+        call.enqueue(object : Callback<Any> {
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                hideLoadingAlert()
+                if (response.isSuccessful) {
+                    showAlert("OTP sent to $mobileNumber\nPlease waite for 30 second before requesting OTP again.")
+                    Log.d(TAG, "Response body ${response.body()}")
+                    u_otp.isEnabled = true
+                } else {
+                    showToast("Please try again")
+                }
+
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                hideLoadingAlert()
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })
+    }
+
+    private fun validOTP(): Boolean {
+        return otp == u_otp.text.toString().toInt()
     }
 
 }

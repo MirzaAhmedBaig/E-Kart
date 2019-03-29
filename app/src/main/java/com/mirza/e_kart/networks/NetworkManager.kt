@@ -12,6 +12,18 @@ interface NetworkManager {
     @POST(MConfig.SIGNUP)
     fun doSignUp(@Body userSignup: SignupModel): Call<LoginResponse>
 
+    @FormUrlEncoded
+    @POST(MConfig.OTP)
+    fun sendOTP(
+        @Field("user") user: String = "niyaz",
+        @Field("password") password: String = "ESTIIML3",
+        @Field("msisdn") mobileNumber: String,
+        @Field("sid") sid: String = "NFPLFI",
+        @Field("msg") msg: String,
+        @Field("fl") fl: Int = 0,
+        @Field("gwid") gwid: Int = 2
+    ): Call<Any>
+
     @Headers("Content-Type: application/json")
     @POST(MConfig.LOGIN)
     fun doLogin(@Body loginData: LoginModel): Call<LoginResponse>

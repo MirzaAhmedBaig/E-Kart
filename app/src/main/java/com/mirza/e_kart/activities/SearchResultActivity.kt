@@ -22,9 +22,20 @@ class SearchResultActivity : AppCompatActivity() {
         search_results.adapter as ProductListAdapter
     }
 
+    private val isCategory by lazy {
+        intent.getBooleanExtra("isCat", false)
+    }
+
+    private val category by lazy {
+        intent.getStringExtra("cat")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_result)
+        if (isCategory) {
+            bar_title.text = category.capitalize()
+        }
         setListeners()
         productList?.let {
             setProductList(it)

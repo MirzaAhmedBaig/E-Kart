@@ -6,6 +6,8 @@ import android.widget.Toast
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.extensions.shareApp
+import com.mirza.e_kart.networks.models.ProductList
+import com.mirza.e_kart.networks.models.ProductModel
 
 /**
  * Created by Mirza Ahmed Baig on 15/03/19.
@@ -55,6 +57,17 @@ fun Fragment.showLoadingAlert(message: String = "") {
     }
     progressDialog!!.show(fragmentManager, "loading_alert_dialog_fragment")
 
+}
+
+fun Fragment.getMatchingItems(productList: ArrayList<ProductModel>?, id: Int): ProductList? {
+    val list = productList?.filter { it.category_id == id }
+    return if (list != null && list.isNotEmpty()) {
+        ProductList(ArrayList<ProductModel>().apply {
+            addAll(list)
+        })
+    } else {
+        null
+    }
 }
 
 

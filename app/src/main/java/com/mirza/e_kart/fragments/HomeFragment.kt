@@ -10,16 +10,20 @@ import android.view.View
 import android.view.ViewGroup
 import com.mirza.e_kart.R
 import com.mirza.e_kart.activities.ProductDetailsActivity
+import com.mirza.e_kart.activities.SearchResultActivity
 import com.mirza.e_kart.adapters.CategoryAdapter
 import com.mirza.e_kart.adapters.ProductListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
+import com.mirza.e_kart.listeners.CategoryListener
 import com.mirza.e_kart.listeners.RefreshProductListener
 import com.mirza.e_kart.networks.models.CategoriesModel
 import com.mirza.e_kart.networks.models.Category
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
+import getMatchingItems
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_home.*
+import showAlert
 import showToast
 
 
@@ -27,6 +31,7 @@ class HomeFragment : Fragment() {
 
     private val TAG = HomeFragment::class.java.simpleName
     private var refreshProductListener: RefreshProductListener? = null
+    private var categoryListener: CategoryListener? = null
     private val productAdapter by lazy {
         product_list.adapter as ProductListAdapter
     }
@@ -107,6 +112,21 @@ class HomeFragment : Fragment() {
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")
+                            productList?.let {
+                                val results = getMatchingItems(it, categories[position].id)
+                                if (results != null) {
+                                    Intent(context, SearchResultActivity::class.java).apply {
+                                        putExtra("productList", results)
+                                        putExtra("isCat", true)
+                                        putExtra("cat", categories[position].name)
+                                    }.also {
+                                        startActivity(it)
+                                    }
+
+                                } else {
+                                    showAlert("No item found")
+                                }
+                            } ?: showToast("No items found")
                         }
 
                     })

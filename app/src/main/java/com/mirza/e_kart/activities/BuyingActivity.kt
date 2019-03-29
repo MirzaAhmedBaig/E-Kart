@@ -7,6 +7,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.AssetFileDescriptor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -40,6 +43,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -404,10 +408,16 @@ class BuyingActivity : AppCompatActivity() {
             family_member_name.error = "Enter family member name"
             return false
         }
-        if (family_member_number.text.isBlank() || family_member_number.text.toString().trim().length < 10) {
+        if (!family_member_number.text.toString().matches(Regex("^[6-9][0-9]{9}$"))) {
             family_member_number.requestFocus()
             family_member_number.error = "Enter valid mobile number"
             return false
+        } else {
+            if (family_member_number.text.toString() == appPreferences.getUser().mobile_number) {
+                family_member_number.requestFocus()
+                family_member_number.error = "Can't be same as your number"
+                return false
+            }
         }
 
         if (guarantor_name.text.isBlank()) {
@@ -415,10 +425,16 @@ class BuyingActivity : AppCompatActivity() {
             guarantor_name.error = "Enter guarantor name"
             return false
         }
-        if (guarantor_number.text.isBlank() || guarantor_number.text.toString().trim().length < 10) {
+        if (!guarantor_number.text.toString().matches(Regex("^[6-9][0-9]{9}$"))) {
             guarantor_number.requestFocus()
             guarantor_number.error = "Enter valid mobile number"
             return false
+        } else {
+            if (guarantor_number.text.toString() == appPreferences.getUser().mobile_number) {
+                guarantor_number.requestFocus()
+                guarantor_number.error = "Can't be same as your number"
+                return false
+            }
         }
 
         if (documentsPathList[0] == null || documentsPathList[1] == null) {
@@ -478,7 +494,9 @@ class BuyingActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             try {
-                val thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+
+//                val thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                val thumbnail = decodeBitmap(this, imageUri!!, 4)
                 val imageurl = imageUri?.getRealPathFromURI(contentResolver)
                 Log.d(TAG, "Path : $imageurl")
                 when (requestCode) {
@@ -509,8 +527,6 @@ class BuyingActivity : AppCompatActivity() {
 
         }
     }
-
-
 
 
     private fun checkForPermission(): Boolean {
@@ -689,5 +705,27 @@ class BuyingActivity : AppCompatActivity() {
         })
     }
 
+    fun decodeBitmap(context: Context, theUri: Uri, sampleSize: Int): Bitmap {
+        val options = BitmapFactory.Options()
+        options.inSampleSize = sampleSize
+
+        var fileDescriptor: AssetFileDescriptor? = null
+        try {
+            fileDescriptor = context.contentResolver.openAssetFileDescriptor(theUri, "r")
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+
+        val actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
+            fileDescriptor!!.fileDescriptor, null, options
+        )
+
+        Log.d(
+            TAG,
+            "${options.inSampleSize} sample method bitmap ... ${actuallyUsableBitmap.width}  ${actuallyUsableBitmap.height}"
+        )
+
+        return actuallyUsableBitmap
+    }
 
 }

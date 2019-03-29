@@ -160,9 +160,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val results = getMatchingItems(productList, it)
                     if (results != null) {
                         Intent(this@HomeActivity, SearchResultActivity::class.java).apply {
-                            putExtra("productList", results).also {
-                                startActivity(it)
-                            }
+                            putExtra("productList", results)
+                        }.also {
+                            startActivity(it)
                         }
 
                     } else {

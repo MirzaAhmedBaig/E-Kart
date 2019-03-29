@@ -1,9 +1,8 @@
 package com.mirza.e_kart.classes
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.*
 import android.media.ExifInterface
+import com.mirza.e_kart.extensions.getCurrentTimeString
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -16,6 +15,13 @@ import java.io.IOException
  */
 
 internal object ImageUtil {
+    private val paint by lazy {
+        Paint().apply {
+            color = Color.WHITE
+            textSize = 40f
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
+        }
+    }
 
     @Throws(IOException::class)
     fun compressImage(
@@ -74,6 +80,11 @@ internal object ImageUtil {
             8 -> matrix.postRotate(270f)
         }
         scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
+
+        //add date on it
+        val canvas = Canvas(scaledBitmap)
+        canvas.drawBitmap(scaledBitmap, 0f, 0f, paint)
+        canvas.drawText(getCurrentTimeString(), 50f, 50f, paint)
         return scaledBitmap
     }
 

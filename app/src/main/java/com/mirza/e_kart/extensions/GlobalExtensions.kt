@@ -51,6 +51,16 @@ fun timestampToDate(s: Long): String {
     }
 }
 
+fun getCurrentTimeString(): String {
+    return try {
+        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val netDate = Date(System.currentTimeMillis())
+        sdf.format(netDate)
+    } catch (e: Exception) {
+        e.toString()
+    }
+}
+
 
 fun getStatusByCode(code: Int): String {
     return when (code) {
