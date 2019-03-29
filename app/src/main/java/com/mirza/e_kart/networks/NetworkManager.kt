@@ -77,7 +77,8 @@ interface NetworkManager {
         @Part aadhaarBack: MultipartBody.Part,
         @Part pan: MultipartBody.Part,
         @Part bank: MultipartBody.Part,
-        @Part selfie: MultipartBody.Part
+        @Part selfie: MultipartBody.Part,
+        @Part check_pic: MultipartBody.Part?
     ): Call<Any>
 
 }

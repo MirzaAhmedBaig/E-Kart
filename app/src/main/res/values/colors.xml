@@ -18,12 +18,8 @@
     <color name="button_primary">#41738E</color>
     <color name="button_secondary">#D9905B</color>
 
-    <color name="delivered_color">#ffffff</color>
-    <color name="cancelled_color">#ffffff</color>
     <color name="gray_50">#cccccc</color>
     <color name="gray_300">#777777</color>
 
-    <color name="color">#D9905B</color>
-    <color name="color2">#41738E</color>
     <color name="selected_color">#00ff40</color>
 </resources>

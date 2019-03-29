@@ -79,6 +79,7 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
     private fun setProductDetails() {
         product_name.text = productDetails.name
         product_price.text = "\u20B9${productDetails.price}"
+        processing_fees.text = "Processing Fees : \u20B9${productDetails.processing_fees}"
         product_interest_text.text = "Get this item at ${productDetails.interest}% interest rate"
         product_description.text = productDetails.description
         product_details.settings.javaScriptEnabled = true

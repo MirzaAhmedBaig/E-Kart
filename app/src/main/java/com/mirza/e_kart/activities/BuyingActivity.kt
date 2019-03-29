@@ -56,7 +56,7 @@ class BuyingActivity : AppCompatActivity() {
     private var selectedPinCode = -1
     private var selectedResidence = ""
     private var selectedEmployment = ""
-    private var documentsPathList = arrayOfNulls<String?>(5)
+    private var documentsPathList = arrayOfNulls<String?>(6)
 
     private val permsRequestCode = 200
     private var cameraImageCode = -1
@@ -206,6 +206,15 @@ class BuyingActivity : AppCompatActivity() {
                 false
             ) {
                 openCamera(Constants.PASSBOOK_PIC_REQUEST)
+            }
+
+        }
+        cheque.setOnClickListener {
+            showAlert(
+                "Please take image of blank Cheque.",
+                false
+            ) {
+                openCamera(Constants.CHEQUE_PIC_REQUEST)
             }
 
         }
@@ -520,6 +529,10 @@ class BuyingActivity : AppCompatActivity() {
                         documentsPathList[4] = imageurl
                         passbook.setImageBitmap(thumbnail)
                     }
+                    Constants.CHEQUE_PIC_REQUEST -> {
+                        documentsPathList[5] = imageurl
+                        cheque.setImageBitmap(thumbnail)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -637,6 +650,16 @@ class BuyingActivity : AppCompatActivity() {
             RequestBody.create(MediaType.parse("image/*"), s_image)
         )
 
+        val cheque_front = if (documentsPathList[5] != null) {
+            val c_image = File(documentsPathList[5])
+            MultipartBody.Part.createFormData(
+                "cheque_image",
+                c_image.name,
+                RequestBody.create(MediaType.parse("image/*"), c_image)
+            )
+        } else {
+            null
+        }
 
         val call = ClientAPI.clientAPI.sendCustomerRequest(
             "Bearer " + appPreferences.getJWTToken(),
@@ -663,7 +686,8 @@ class BuyingActivity : AppCompatActivity() {
             a_back,
             pan_front,
             pass_front,
-            selfie_front
+            selfie_front,
+            cheque_front
         )
         Log.d(TAG, "Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<Any> {

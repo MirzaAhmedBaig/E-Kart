@@ -13,6 +13,7 @@ data class ProductModel(
     val description: String,
     val interest: Double,
     val price: Double,
+    val processing_fees: Double,
     val created_at: Long,
     val updated_at: Long,
     val specification: String?

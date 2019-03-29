@@ -1,39 +1,22 @@
 <resources>
     <string name="app_name">NFPL</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="image">image</string>
     <string name="email">email</string>
     <string name="password">Password</string>
     <string name="forget_password">Forgot Password?</string>
     <string name="login">Login</string>
-    <string name="loading">loading</string>
     <string name="email_sent">Password reset link has been sent to you email id.</string>
     <string name="enter_your_email">Enter Your Email</string>
     <string name="done">Done</string>
-    <string name="full_name">Full Name</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="otp">OTP</string>
     <string name="register">Register</string>
     <string name="already_have_a_account_login_here">Already have a account? Login here</string>
     <string name="show">Show</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
     <string name="my_name">Mirza Ahmed Baig</string>
     <string name="my_email">mirzaahmed65@gmail.com</string>
     <string name="home">Home</string>
@@ -43,7 +26,6 @@
     <string name="sign_out">Sign out</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="product_name">NOKIA 5.1 PLUS</string>
     <string name="price">\u20B914,999</string>
     <string name="intrest_text">Get this item at 2% interest rate</string>
@@ -52,7 +34,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="search">Search</string>
-    <string name="search_hint">makanaka</string>
     <string name="buy_now">Buy Now</string>
     <string name="user_details">User Details</string>
     <string name="first_name">First name</string>
@@ -90,10 +71,11 @@
     <string name="people_referred_you">People who referred you</string>
     <string name="shipping_details">Shpping Details</string>
     <string name="address">Address</string>
-    <string name="price_details">Price Details</string>
     <string name="order_details">Order Details</string>
     <string name="search_results">Search Results</string>
     <string name="request_otp">Request OTP</string>
     <string name="product_details">Product Details</string>
     <string name="finance_details">Finance Details</string>
+    <string name="take_image_of_cheque_optional">Take image of cheque(Optional)</string>
+    <string name="processing_fees">Processing Fees :</string>
 </resources>

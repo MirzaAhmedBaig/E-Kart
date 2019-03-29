@@ -8,7 +8,6 @@ class MConfig {
         const val BASE_URL = "https://sadathostings.online/finance/public/api/authV2/"
         const val LOGIN = "login"
         const val SIGNUP = "signup"
-        //        const val OTP = "http://sms.webtechsolution.co/vendorsms/pushsms.aspx/{user}/{password}/{msisdn}/{sid}/{msg}/{fl}/{gwid}"
         const val OTP = "http://sms.webtechsolution.co/vendorsms/pushsms.aspx"
         const val PRODUCTS = "product"
         const val CATEGORIES = "category"
