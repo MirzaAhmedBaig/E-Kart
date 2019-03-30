@@ -28,15 +28,18 @@ fun compressFiles(context: Context, paths: Array<String?>) {
     if (!tempFolder.exists())
         tempFolder.mkdir()
     paths.forEach {
-        val file = File(it)
-        val compressedImage = Compressor(context)
-            .setDestinationDirectoryPath(tempFolder.path)
-            .compressToFile(file)
-        file.delete()
-        val out: OutputStream = FileOutputStream(File(it))
-        out.write(compressedImage.readBytes())
-        out.close()
-        compressedImage.delete()
+        it?.let {
+            val file = File(it)
+            val compressedImage = Compressor(context)
+                .setDestinationDirectoryPath(tempFolder.path)
+                .compressToFile(file)
+            file.delete()
+            val out: OutputStream = FileOutputStream(File(it))
+            out.write(compressedImage.readBytes())
+            out.close()
+            compressedImage.delete()
+        }
+
     }
     Log.d("TAG", "Time : " + System.currentTimeMillis())
 }

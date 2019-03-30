@@ -135,6 +135,7 @@ class LoginActivity : AppCompatActivity() {
                         showToast("Error in logging in!")
                         return
                     }
+                    Log.d(TAG, "Response : ${response.body()}  ${response.body()?.user}")
                     completedLogin(loginResponse)
                 } else {
                     when {

@@ -71,6 +71,9 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
     }
 
     private fun setProductCarousel(list: ArrayList<String>) {
+        if (list.size == 0) {
+            product_carousal.setBackgroundResource(R.mipmap.download)
+        }
         product_carousal.adapter = ProductCarouselAdapter(this, list, this)
         dots_indicator.setViewPager(product_carousal)
         setGalleryAdapter(list)

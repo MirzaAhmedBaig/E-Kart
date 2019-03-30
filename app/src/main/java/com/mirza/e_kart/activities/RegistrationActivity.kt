@@ -86,11 +86,16 @@ class RegistrationActivity : AppCompatActivity() {
 
 
         request_otp.setOnClickListener {
-            request_otp.isEnabled = false
-            sendOTP()
-            Handler().postDelayed({
+            if (!u_number.text.toString().matches(Regex("^[6-9][0-9]{9}$"))) {
+                u_number.requestFocus()
+                u_number.error = "Enter valid mobile number"
+            } else {
                 request_otp.isEnabled = false
-            }, 30000)
+                sendOTP()
+                Handler().postDelayed({
+                    request_otp.isEnabled = true
+                }, 30000)
+            }
         }
 
     }
@@ -125,7 +130,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         if (u_otp.text.toString().trim().length != 6) {
             u_otp.requestFocus()
-            u_otp.error = "Enter OTP"
+            u_otp.error = "Enter valid OTP"
             return false
         } else {
             if (!validOTP()) {
@@ -173,8 +178,8 @@ class RegistrationActivity : AppCompatActivity() {
         appPreferences.setReferId(response.user.reference_code)
         appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
         appPreferences.setJWTToken(response.access_token)
-        startActivity(Intent(this, HomeActivity::class.java))
-        finishAffinity()
+//        startActivity(Intent(this, HomeActivity::class.java))
+//        finishAffinity()
     }
 
     private fun performRegistrationRequest() {
@@ -208,6 +213,8 @@ class RegistrationActivity : AppCompatActivity() {
                         showToast("Please try after sometime")
                         return
                     }
+
+                    Log.d(TAG, "Response : ${response.body()}  ${response.body()?.user}")
                     completedLogin(loginResponse)
                 } else {
                     when {
@@ -224,6 +231,7 @@ class RegistrationActivity : AppCompatActivity() {
                             showToast("Internal server error, please try again")
                         }
                         else -> {
+                            Log.d(TAG, "Response Code : ${response.code()}")
                             try {
                                 val jObjError = JSONObject(response.errorBody()!!.string())
                                 showToast(jObjError.getString("error"))
