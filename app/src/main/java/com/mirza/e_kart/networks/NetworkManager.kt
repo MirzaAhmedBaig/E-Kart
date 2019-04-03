@@ -50,10 +50,8 @@ interface NetworkManager {
 
 
     @Multipart
-    @Headers("Content-Type: application/json")
     @POST(CUSTOMER_REQUEST)
     fun sendCustomerRequest(
-        @Header("Authorization") bearer: String,
         @Part("customer_id") customerId: RequestBody,
         @Part("product_id") productId: RequestBody,
         @Part("dob") dob: RequestBody,
@@ -78,8 +76,9 @@ interface NetworkManager {
         @Part pan: MultipartBody.Part,
         @Part bank: MultipartBody.Part,
         @Part selfie: MultipartBody.Part,
-        @Part check_pic: MultipartBody.Part?
+        @Part cheque_pic: MultipartBody.Part?
     ): Call<Any>
+
 
 }
 

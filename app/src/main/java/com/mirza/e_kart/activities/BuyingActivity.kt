@@ -36,6 +36,8 @@ import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_buying.*
 import kotlinx.android.synthetic.main.content_buy_activity.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -110,7 +112,7 @@ class BuyingActivity : AppCompatActivity() {
 
                 override fun onImageSubmit() {
                     Log.d(TAG, "onImageSubmit")
-                    sendCustomerRequest()
+                    compressAndSend()
                 }
 
                 override fun onRetryClicked() {
@@ -546,10 +548,10 @@ class BuyingActivity : AppCompatActivity() {
         return if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
@@ -581,7 +583,7 @@ class BuyingActivity : AppCompatActivity() {
 
     }
 
-    private fun sendCustomerRequest() {
+    private fun compressAndSend() {
         if (!isNetworkAvailable()) {
             val dialog = CustomAlertDialog().apply {
                 setMessage("Please check your internet.")
@@ -593,10 +595,23 @@ class BuyingActivity : AppCompatActivity() {
         }
         showLoadingAlert("Please wait while we submit your request. It may take few minutes to complete.")
 
+        GlobalScope.async {
+            showToast("GlobalScope.async")
+            compressFiles(this@BuyingActivity, documentsPathList) {
+                runOnUiThread {
+                    showToast("Compression done")
+                    startSendingRequest()
+                }
+            }
+        }
+    }
 
+
+    private fun startSendingRequest() {
+        showToast("startSendingRequest")
         val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
         val p_id = RequestBody.create(okhttp3.MultipartBody.FORM, productId.toString())
-        val dobValue = RequestBody.create(okhttp3.MultipartBody.FORM, myCalendar.time.toString())
+        val dobValue = RequestBody.create(okhttp3.MultipartBody.FORM, myCalendar.time.time.toString())
         val genderText = RequestBody.create(okhttp3.MultipartBody.FORM, gender.selectedItem.toString())
         val c_addr = RequestBody.create(okhttp3.MultipartBody.FORM, current_address.text.toString())
         val p_addr = RequestBody.create(okhttp3.MultipartBody.FORM, permanent_address.text.toString())
@@ -609,18 +624,22 @@ class BuyingActivity : AppCompatActivity() {
         val m_sal = RequestBody.create(okhttp3.MultipartBody.FORM, monthly_income.text.toString())
         val a_sal = RequestBody.create(okhttp3.MultipartBody.FORM, annual_income.text.toString())
         val f_name = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_name.text.toString())
-        val f_number = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_name.text.toString())
+        val f_number = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_number.text.toString())
         val g_name = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_name.text.toString())
         val g_number = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_number.text.toString())
         val r_code = RequestBody.create(okhttp3.MultipartBody.FORM, referral_code.text.toString())
-
-        compressFiles(this, documentsPathList)
 
         val a_f_image = File(documentsPathList[0])
         val a_b_image = File(documentsPathList[1])
         val p_image = File(documentsPathList[2])
         val pass_image = File(documentsPathList[4])
         val s_image = File(documentsPathList[3])
+
+        Log.d(TAG, "AdF Image : ${a_f_image.exists()}")
+        Log.d(TAG, "AdB Image : ${a_b_image.exists()}")
+        Log.d(TAG, "PAN Image : ${p_image.exists()}")
+        Log.d(TAG, "PAss Image : ${pass_image.exists()}")
+        Log.d(TAG, "Sel Image : ${s_image.exists()}")
 
         val a_front = MultipartBody.Part.createFormData(
             "aadhar_photo_front",
@@ -652,6 +671,8 @@ class BuyingActivity : AppCompatActivity() {
 
         val cheque_front = if (documentsPathList[5] != null) {
             val c_image = File(documentsPathList[5])
+            Log.d(TAG, "C Image : ${c_image.exists()}")
+
             MultipartBody.Part.createFormData(
                 "cheque_image",
                 c_image.name,
@@ -665,7 +686,6 @@ class BuyingActivity : AppCompatActivity() {
         Log.d(TAG, "P ID  ${productId.toString()}.")
 
         val call = ClientAPI.clientAPI.sendCustomerRequest(
-            "Bearer " + appPreferences.getJWTToken(),
             c_id,
             p_id,
             dobValue,
@@ -693,17 +713,18 @@ class BuyingActivity : AppCompatActivity() {
             cheque_front
         )
         Log.d(TAG, "Request URL : ${call.request().url()}")
+        showToast("Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 hideLoadingAlert()
+                showToast("onResponse")
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse == null) {
                         showToast("Please try after sometime")
                         return
                     }
-                    /*val jObjError = JSONObject(response.errorBody()!!.string())
-                    Log.d(TAG, "${jObjError.getString("message")}")*/
+                    deleteFiles()
                     val dialog = CustomAlertDialog().apply {
                         setMessage("Your request has been successfully submitted, you can check order status in orders history.")
                         setSingleButton(true)
@@ -721,7 +742,7 @@ class BuyingActivity : AppCompatActivity() {
 
                 }
 
-                Log.d(TAG, "Response Code : ${response.code()}")
+                Log.d(TAG, "Response Code : ${response.code()} \n Body ${response}")
             }
 
             override fun onFailure(call: Call<Any>, t: Throwable) {
@@ -753,6 +774,19 @@ class BuyingActivity : AppCompatActivity() {
         )
 
         return actuallyUsableBitmap
+    }
+
+
+    private fun deleteFiles() {
+        documentsPathList.forEach {
+            it?.let {
+                File(it).let {
+                    if (it.exists()) {
+                        it.delete()
+                    }
+                }
+            }
+        }
     }
 
 }

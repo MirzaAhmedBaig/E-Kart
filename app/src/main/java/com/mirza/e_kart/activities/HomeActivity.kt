@@ -97,6 +97,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer_layout.closeDrawer(GravityCompat.START)
         } else if (menuIndex != 0) {
             moveToHomePage()
+            nav_view.menu.getItem(menuIndex).isChecked = true
         } else {
             if (isBackPressed)
                 super.onBackPressed()

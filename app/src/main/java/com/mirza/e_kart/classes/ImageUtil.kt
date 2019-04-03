@@ -79,13 +79,14 @@ internal object ImageUtil {
             3 -> matrix.postRotate(180f)
             8 -> matrix.postRotate(270f)
         }
-        scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
+        var scaledBitmapTwo =
+            Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
 
         //add date on it
-        val canvas = Canvas(scaledBitmap)
-        canvas.drawBitmap(scaledBitmap, 0f, 0f, paint)
+        val canvas = Canvas(scaledBitmapTwo)
+        canvas.drawBitmap(scaledBitmapTwo, 0f, 0f, paint)
         canvas.drawText(getCurrentTimeString(), 50f, 50f, paint)
-        return scaledBitmap
+        return scaledBitmapTwo
     }
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {

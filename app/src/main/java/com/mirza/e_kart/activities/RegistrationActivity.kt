@@ -178,8 +178,8 @@ class RegistrationActivity : AppCompatActivity() {
         appPreferences.setReferId(response.user.reference_code)
         appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
         appPreferences.setJWTToken(response.access_token)
-//        startActivity(Intent(this, HomeActivity::class.java))
-//        finishAffinity()
+        startActivity(Intent(this, HomeActivity::class.java))
+        finishAffinity()
     }
 
     private fun performRegistrationRequest() {
@@ -222,10 +222,10 @@ class RegistrationActivity : AppCompatActivity() {
                             u_password.requestFocus()
                             u_password.error = "Invalid password"
                         }
-                        response.code() == 404 -> {
-                            /* val jObjError = JSONObject(response.errorBody()!!.string())
+                        response.code() == 401 -> {
+
                              u_email.requestFocus()
-                             u_email.error = jObjError.getString("error")*/
+                            u_email.error = "Email already exist"
                         }
                         response.code() == 500 -> {
                             showToast("Internal server error, please try again")

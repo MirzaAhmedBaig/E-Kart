@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.order_details_contents.*
 
 class OrderDetailsActivity : AppCompatActivity() {
 
+    private val TAG = OrderDetailsActivity::class.java.simpleName
     private val orderDetails by lazy {
         intent.getParcelableExtra("productDetails") as OrderedProduct
     }
@@ -47,6 +49,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     }
 
     private fun setDetails() {
+        Log.d(TAG, "DOB : ${orderDetails.created_at}")
         product_name.text = orderDetails.name
         product_price.text = "\u20B9" + orderDetails.price
         Glide.with(this)
@@ -55,7 +58,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         customer_name.text = appPreferences.getUserName()
         customer_address.text = orderDetails.current_address
         setStatus(orderDetails.status)
-        request_date.text = timestampToDate(orderDetails.created_at)
+        request_date.text = timestampToDate(orderDetails.created_at * 1000L)
 
     }
 
@@ -64,7 +67,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         if (code in 0..2) {
             vertical_progressbar.progress = 50 * code
             if (code == 2) {
-                delivered_date.text = timestampToDate(orderDetails.updated_at)
+                delivered_date.text = timestampToDate(orderDetails.updated_at * 1000L)
                 delivered_date.visibility = View.VISIBLE
             }
             (0..code)
@@ -77,7 +80,7 @@ class OrderDetailsActivity : AppCompatActivity() {
             (0..1).forEach {
                 dotsList[it]?.setBackgroundResource(R.drawable.rejected_dot)
             }
-            approved_date.text = timestampToDate(orderDetails.updated_at)
+            approved_date.text = timestampToDate(orderDetails.updated_at * 1000L)
             approved_text.text = "Rejected"
         }
     }

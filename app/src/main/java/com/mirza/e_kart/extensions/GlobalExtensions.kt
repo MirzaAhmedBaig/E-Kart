@@ -22,7 +22,7 @@ fun Any?.toStringWithGSON(): String {
 }
 
 
-fun compressFiles(context: Context, paths: Array<String?>) {
+fun compressFiles(context: Context, paths: Array<String?>, onComplete: () -> Unit) {
     Log.d("TAG", "Time : " + System.currentTimeMillis())
     val tempFolder = File(File(paths[0]).parent + File.separator + "temp")
     if (!tempFolder.exists())
@@ -41,12 +41,13 @@ fun compressFiles(context: Context, paths: Array<String?>) {
         }
 
     }
-    Log.d("TAG", "Time : " + System.currentTimeMillis())
+    Log.d("TAG", "Compression complete : " + System.currentTimeMillis())
+    onComplete()
 }
 
 fun timestampToDate(s: Long): String {
     return try {
-        val sdf = SimpleDateFormat("D, mm-MMM yyyy")
+        val sdf = SimpleDateFormat("EEE, m-MMM yyyy")
         val netDate = Date(s)
         sdf.format(netDate)
     } catch (e: Exception) {
