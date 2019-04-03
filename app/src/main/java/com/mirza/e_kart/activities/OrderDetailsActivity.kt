@@ -50,7 +50,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         product_name.text = orderDetails.name
         product_price.text = "\u20B9" + orderDetails.price
         Glide.with(this)
-            .load(MConfig.IMAGE_BASE_URL + orderDetails.image)
+            .load(MConfig.PRODUCT_BASE_URL + orderDetails.image)
             .into(thumbnail)
         customer_name.text = appPreferences.getUserName()
         customer_address.text = orderDetails.current_address

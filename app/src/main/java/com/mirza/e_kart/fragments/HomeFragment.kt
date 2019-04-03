@@ -20,7 +20,7 @@ import com.mirza.e_kart.networks.models.CategoriesModel
 import com.mirza.e_kart.networks.models.Category
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
-import getMatchingItems
+import getMatchingItemsByCategory
 import isNetworkAvailable
 import kotlinx.android.synthetic.main.fragment_home.*
 import showAlert
@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")
                             productList?.let {
-                                val results = getMatchingItems(it, categories[position].id)
+                                val results = getMatchingItemsByCategory(it, categories[position].id)
                                 if (results != null) {
                                     Intent(context, SearchResultActivity::class.java).apply {
                                         putExtra("productList", results)

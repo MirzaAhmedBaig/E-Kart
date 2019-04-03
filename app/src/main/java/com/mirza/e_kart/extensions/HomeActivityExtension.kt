@@ -8,6 +8,7 @@ import com.mirza.e_kart.fragments.OrderHistoryFragment
 import com.mirza.e_kart.fragments.ReferralFragment
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 
 /**
@@ -22,6 +23,7 @@ fun HomeActivity.moveToHomePage() {
         return
     supportFragmentManager.beginTransaction().replace(R.id.main_layout, homeFragment!!, "home_fragment").commit()
     menuIndex = 0
+    toolbar.title = titles[menuIndex]
 }
 
 fun HomeActivity.moveToOrdersPage() {
@@ -31,6 +33,7 @@ fun HomeActivity.moveToOrdersPage() {
     supportFragmentManager.beginTransaction().replace(R.id.main_layout, OrderHistoryFragment(), "home_fragment")
         .commit()
     menuIndex = 1
+    toolbar.title = titles[menuIndex]
 }
 
 fun HomeActivity.moveToReferralPage() {
@@ -40,10 +43,11 @@ fun HomeActivity.moveToReferralPage() {
     supportFragmentManager.beginTransaction().replace(R.id.main_layout, ReferralFragment(), "home_fragment")
         .commit()
     menuIndex = 2
+    toolbar.title = titles[menuIndex]
 }
 
 fun AppCompatActivity.getMatchingItems(productList: ProductList?, queryText: String): ProductList? {
-    val list = productList?.product?.filter { it.name.contains(queryText) }
+    val list = productList?.product?.filter { it.name.contains(queryText, true) }
     return if (list != null && list.isNotEmpty()) {
         ProductList(ArrayList<ProductModel>().apply {
             addAll(list)

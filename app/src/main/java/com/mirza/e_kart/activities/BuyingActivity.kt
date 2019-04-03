@@ -591,7 +591,7 @@ class BuyingActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "select_day_alert")
             return
         }
-        showLoadingAlert("Please waite while we submit your request. It may take few minutes to complete.")
+        showLoadingAlert("Please wait while we submit your request. It may take few minutes to complete.")
 
 
         val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
@@ -660,6 +660,9 @@ class BuyingActivity : AppCompatActivity() {
         } else {
             null
         }
+
+        Log.d(TAG, "User  ${appPreferences.getUser()}.")
+        Log.d(TAG, "P ID  ${productId.toString()}.")
 
         val call = ClientAPI.clientAPI.sendCustomerRequest(
             "Bearer " + appPreferences.getJWTToken(),

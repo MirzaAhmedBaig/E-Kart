@@ -48,7 +48,7 @@ class OrderListAdapter(val dataArray: ArrayList<OrderedProduct>) :
 
         fun onBind(orderedProduct: OrderedProduct) {
             Glide.with(thumbnailImage.context)
-                .load(MConfig.IMAGE_BASE_URL + orderedProduct.image)
+                .load(MConfig.PRODUCT_BASE_URL + orderedProduct.image)
                 .into(thumbnailImage)
             productName.text = orderedProduct.name
             productPrice.text = "\u20B9" + orderedProduct.price.toString()

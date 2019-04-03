@@ -20,21 +20,55 @@
                 app:contentInsetEnd="0dp"
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay">
-            <ImageButton
-                    android:id="@+id/back_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_back"
-                    android:padding="10dp"
-                    android:background="@null"/>
-            <TextView
-                    android:id="@+id/bar_title"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size"
-                    android:fontFamily="@font/avenir_next_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/search_results"/>
+            <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <ImageButton
+                        android:id="@+id/back_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_back"
+                        android:padding="10dp"
+                        android:background="@null" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                />
+                <TextView
+                        android:id="@+id/bar_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size"
+                        android:fontFamily="@font/avenir_next_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/search_results"
+                        app:layout_constraintTop_toTopOf="@+id/back_button"
+                        app:layout_constraintBottom_toBottomOf="@+id/back_button"
+                        app:layout_constraintStart_toEndOf="@+id/back_button" android:layout_marginStart="8dp"/>
+                <Spinner
+                        android:id="@+id/brand_filter"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/avenir_next_regular"
+                        android:gravity="start"
+                        android:background="@color/button_primary"
+                        android:popupBackground="@color/button_primary"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView3"/>
+
+                <ImageView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:src="@drawable/ic_filter_list" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent" android:id="@+id/imageView3"/>
+            </android.support.constraint.ConstraintLayout>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

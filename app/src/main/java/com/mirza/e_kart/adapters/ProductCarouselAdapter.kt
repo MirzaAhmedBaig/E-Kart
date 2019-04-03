@@ -52,6 +52,7 @@ class ProductCarouselAdapter(
     }
 
     private fun instantiateChild(position: Int, viewGroup: ViewGroup) {
+        Log.d(TAG, "Loading Images ${MConfig.IMAGE_BASE_URL + imagePaths[position]}")
         val imageView = viewGroup.findViewById<ImageView>(R.id.carousel_image)
         Glide.with(imageView.context)
             .load(MConfig.IMAGE_BASE_URL + imagePaths[position])

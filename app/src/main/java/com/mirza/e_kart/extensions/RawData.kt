@@ -34,3 +34,8 @@ val employmentType = ArrayList<String>().apply {
 
 val suggestionList = ArrayList<String>()
 
+val brandList = ArrayList<String>().apply {
+    add("Select Brand")
+    add("All Brands")
+}
+

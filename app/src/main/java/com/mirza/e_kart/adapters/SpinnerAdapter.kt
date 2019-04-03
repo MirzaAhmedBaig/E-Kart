@@ -1,6 +1,7 @@
 package com.mirza.e_kart.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,9 @@ class SpinnerAdapter(context: Context, textViewResourceId: Int, val objects: Arr
     private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = LayoutInflater.from(parent.context).inflate(R.layout.spinner_list, parent, false)
         val label = row.findViewById(R.id.item) as TextView
+        if (objects[0].contains("brand", true)) {
+            label.setTextColor(Color.parseColor("#FFFFFF"))
+        }
         label.text = objects[position]
         return row
     }

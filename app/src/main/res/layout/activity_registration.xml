@@ -246,7 +246,7 @@
             android:inputType="number"
             android:maxLines="1"
             android:maxLength="6"
-            android:enabled="false"
+            android:enabled="true"
             android:textColor="@color/text_color_black"
             android:textColorHint="@color/hint_color"
             android:textSize="@dimen/text_size"

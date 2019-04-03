@@ -9,6 +9,7 @@ data class ProductModel(
     val name: String,
     val category_id: Int,
     val brand_id: Int,
+    val brand_name: String?,
     val image: String,
     val description: String,
     val interest: Double,

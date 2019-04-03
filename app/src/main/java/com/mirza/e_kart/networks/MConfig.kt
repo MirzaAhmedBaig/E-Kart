@@ -15,7 +15,8 @@ class MConfig {
         const val CUSTOMER_REQUEST = "customer_request"
         const val REFERRAL_LIST = "referal"
         const val ORDERS = "order"
-        const val IMAGE_BASE_URL = "https://sadathostings.online/finance/storage/app/product/"
+        const val PRODUCT_BASE_URL = "https://sadathostings.online/finance/storage/app/product/"
+        const val IMAGE_BASE_URL = "https://sadathostings.online/finance/storage/app/image/"
     }
 }
 

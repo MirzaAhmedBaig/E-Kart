@@ -40,6 +40,7 @@ import retrofit2.Response
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, RefreshProductListener {
 
     private val TAG = HomeActivity::class.java.simpleName
+    val titles = listOf("Home", "My Orders", "Referral")
     private val fromStrings = arrayOf("productName")
     var menuIndex = 0
     private var productList: ProductList? = null
@@ -81,12 +82,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         nav_view.menu.getItem(menuIndex).isChecked = true
+        toolbar.title = titles[menuIndex]
+        isBackPressed = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isBackPressed = false
     }
 
     private var isBackPressed = false
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
+        } else if (menuIndex != 0) {
+            moveToHomePage()
         } else {
             if (isBackPressed)
                 super.onBackPressed()
@@ -187,7 +197,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun populateAdapter(query: String) {
         val cursor = MatrixCursor(arrayOf(BaseColumns._ID, "productName"))
         suggestionList.forEachIndexed { index, it ->
-            if (it.toLowerCase().startsWith(query.toLowerCase())) {
+            if (it.toLowerCase().contains(query.toLowerCase())) {
                 cursor.addRow(arrayOf(index, it))
             }
         }
@@ -195,6 +205,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setUpNavigationBar() {
+        toolbar.title = "Home"
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -290,6 +301,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     suggestionList.clear()
                     productList?.product?.forEach {
                         suggestionList.add(it.name)
+                        it.brand_name?.let {
+                            brandList.add(it)
+                        }
                     }
                     loadProducts()
                 } else {

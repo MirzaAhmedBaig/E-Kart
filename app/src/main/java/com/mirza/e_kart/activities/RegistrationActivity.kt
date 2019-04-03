@@ -270,7 +270,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
         showLoadingAlert()
         val call =
-            ClientAPI.clientAPI.sendOTP(mobileNumber = mobileNumber, msg = "OPT for NFPL account registration is $otp")
+            ClientAPI.clientAPI.sendOTP(mobileNumber = mobileNumber, msg = "OTP for NFPL account registration is $otp")
         Log.d(
             TAG,
             "Request URL : ${call.request().url()} , Mobile : $mobileNumber Message = OPT for NFPL account registration is $otp"
@@ -279,7 +279,7 @@ class RegistrationActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 hideLoadingAlert()
                 if (response.isSuccessful) {
-                    showAlert("OTP sent to $mobileNumber\nPlease waite for 30 second before requesting OTP again.")
+                    showAlert("OTP sent to $mobileNumber\nPlease wait for 30 second before requesting OTP again.")
                     Log.d(TAG, "Response body ${response.body()}")
                     u_otp.isEnabled = true
                 } else {
