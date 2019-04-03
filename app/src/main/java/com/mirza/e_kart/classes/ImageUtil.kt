@@ -67,6 +67,7 @@ internal object ImageUtil {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false
+        options.inMutable = true
 
         var scaledBitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options)
 

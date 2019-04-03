@@ -36,8 +36,6 @@ import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_buying.*
 import kotlinx.android.synthetic.main.content_buy_activity.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -168,6 +166,7 @@ class BuyingActivity : AppCompatActivity() {
             } else {
                 permanent_address.setText("")
             }
+            permanent_address.isEnabled = !isChecked
         }
 
         datePickerDialog.setOnDismissListener {
@@ -595,7 +594,7 @@ class BuyingActivity : AppCompatActivity() {
         }
         showLoadingAlert("Please wait while we submit your request. It may take few minutes to complete.")
 
-        GlobalScope.async {
+        Handler().post {
             showToast("GlobalScope.async")
             compressFiles(this@BuyingActivity, documentsPathList) {
                 runOnUiThread {
@@ -604,11 +603,11 @@ class BuyingActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
 
     private fun startSendingRequest() {
-        showToast("startSendingRequest")
         val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
         val p_id = RequestBody.create(okhttp3.MultipartBody.FORM, productId.toString())
         val dobValue = RequestBody.create(okhttp3.MultipartBody.FORM, myCalendar.time.time.toString())
@@ -713,11 +712,9 @@ class BuyingActivity : AppCompatActivity() {
             cheque_front
         )
         Log.d(TAG, "Request URL : ${call.request().url()}")
-        showToast("Request URL : ${call.request().url()}")
         call.enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 hideLoadingAlert()
-                showToast("onResponse")
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse == null) {

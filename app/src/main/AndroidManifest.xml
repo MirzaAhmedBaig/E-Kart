@@ -25,7 +25,8 @@
 
         <activity android:name=".activities.SearchResultActivity">
         </activity>
-        <activity android:name=".activities.BuyingActivity">
+        <activity android:name=".activities.BuyingActivity"
+                  android:usesCleartextTraffic="true">
 
             <!--
             <intent-filter>

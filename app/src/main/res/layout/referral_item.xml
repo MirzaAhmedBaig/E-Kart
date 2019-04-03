@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        xmlns:tools="http://schemas.android.com/tools" android:layout_height="wrap_content">
 
 
     <ImageView
@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/avenir_next_medium"
-            android:text="@string/my_name"
+            tools:text="@string/my_name"
             android:textColor="@color/black"
             android:textSize="@dimen/product_sub_title_text"
             android:visibility="visible"
@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/avenir_next_medium"
-            android:text="+917276137498"
+            tools:text="+917276137498"
             android:textColor="@color/black"
             android:textSize="@dimen/small_text_size"
             android:visibility="visible"

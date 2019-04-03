@@ -88,7 +88,7 @@ fun AppCompatActivity.showAlert(message: String, setIcon: Boolean = true, onDone
 
 fun AppCompatActivity.shareApp() {
     val shareIntent = Intent(Intent.ACTION_SEND)
-    val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.e_kart)
+    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.nfpl_share)
     val path =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Share.png"
     val out: OutputStream
