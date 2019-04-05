@@ -9,6 +9,7 @@
           android:paddingStart="15dp"
           android:paddingEnd="15dp"
           android:textSize="@dimen/text_size"
+          android:textColor="@color/text_color_black"
           android:gravity="start"
           android:fontFamily="@font/avenir_next_regular"
           android:singleLine="true"/>

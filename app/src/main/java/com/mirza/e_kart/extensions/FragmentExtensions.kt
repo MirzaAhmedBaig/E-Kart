@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.extensions.shareApp
+import com.mirza.e_kart.listeners.CustomDialogListener
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
 
@@ -33,10 +34,16 @@ internal fun Fragment.showToast(message: String) {
     }
 }
 
-fun Fragment.showAlert(message: String) {
+fun Fragment.showAlert(message: String, onSubmit: () -> Unit = {}) {
     val dialog = CustomAlertDialog().apply {
         setMessage(message)
         setSingleButton(true)
+        setDismissListener(object : CustomDialogListener {
+            override fun onPositiveClicked() {
+                onSubmit()
+            }
+
+        })
     }
     dialog.show(fragmentManager, "alert_dialog")
     return

@@ -3,9 +3,7 @@ package com.mirza.e_kart.extensions
 import android.support.v7.app.AppCompatActivity
 import com.mirza.e_kart.R
 import com.mirza.e_kart.activities.HomeActivity
-import com.mirza.e_kart.fragments.HomeFragment
-import com.mirza.e_kart.fragments.OrderHistoryFragment
-import com.mirza.e_kart.fragments.ReferralFragment
+import com.mirza.e_kart.fragments.*
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -43,6 +41,27 @@ fun HomeActivity.moveToReferralPage() {
     supportFragmentManager.beginTransaction().replace(R.id.main_layout, ReferralFragment(), "home_fragment")
         .commit()
     menuIndex = 2
+    toolbar.title = titles[menuIndex]
+}
+
+
+fun HomeActivity.moveToFeedback() {
+    val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
+    if (fragment is FeedbackFragment)
+        return
+    supportFragmentManager.beginTransaction().replace(R.id.main_layout, FeedbackFragment(), "contacts_fragment")
+        .commit()
+    menuIndex = 3
+    toolbar.title = titles[menuIndex]
+}
+
+fun HomeActivity.moveToContactsPage() {
+    val fragment = supportFragmentManager.findFragmentById(R.id.main_layout)
+    if (fragment is ContactFragment)
+        return
+    supportFragmentManager.beginTransaction().replace(R.id.main_layout, ContactFragment(), "contacts_fragment")
+        .commit()
+    menuIndex = 4
     toolbar.title = titles[menuIndex]
 }
 

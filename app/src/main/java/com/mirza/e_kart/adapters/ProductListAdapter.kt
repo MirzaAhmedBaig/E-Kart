@@ -37,9 +37,6 @@ class ProductListAdapter(val dataArray: ArrayList<ProductModel>) :
         private val productIntrestText by lazy {
             itemView.findViewById<TextView>(R.id.product_interest_text)
         }
-        private val productDiscription by lazy {
-            itemView.findViewById<TextView>(R.id.product_description)
-        }
 
         fun onBind(productInfo: ProductModel) {
             Glide.with(thumbnailImage.context)
@@ -48,7 +45,6 @@ class ProductListAdapter(val dataArray: ArrayList<ProductModel>) :
             productName.text = productInfo.name
             productPrice.text = "\u20B9${productInfo.price}"
             productIntrestText.text = "Get this item at ${productInfo.interest}% interest rate"
-            productDiscription.text = productInfo.description
         }
     }
 }

@@ -60,7 +60,7 @@ class SearchResultActivity : AppCompatActivity() {
     private fun setBrandSpinner(brands: List<String>) {
         val dataAdapter = ArrayAdapter<String>(
             this,
-            android.R.layout.simple_spinner_item, ArrayList<String>().apply {
+            R.layout.custom_spinner_item, ArrayList<String>().apply {
                 addAll(brands)
             }
         )

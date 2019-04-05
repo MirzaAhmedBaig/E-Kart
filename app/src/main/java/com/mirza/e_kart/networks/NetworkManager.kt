@@ -48,6 +48,9 @@ interface NetworkManager {
     @POST(MConfig.ORDERS)
     fun getOrderHistory(@Header("Authorization") bearer: String, @Field("id") id: Int): Call<OrderHistoryModel>
 
+    @Headers("Content-Type: application/json")
+    @POST(MConfig.FEEDBACK)
+    fun sendFeedback(@Header("Authorization") bearer: String,@Body feedback: FeedbackModel): Call<Any>
 
     @Multipart
     @POST(CUSTOMER_REQUEST)

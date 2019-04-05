@@ -84,10 +84,9 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
         product_price.text = "\u20B9${productDetails.price}"
         processing_fees.text = "Processing Fees : \u20B9${productDetails.processing_fees}"
         product_interest_text.text = "Get this item at ${productDetails.interest}% interest rate"
-        product_description.text = productDetails.description
-        product_details.settings.javaScriptEnabled = true
-        productDetails.specification?.let {
-            product_details.loadData(productDetails.specification, "text/html", "UTF-8")
+        product_description.settings.javaScriptEnabled = true
+        productDetails.description.let {
+            product_description.loadData(productDetails.description, "text/html", "UTF-8")
         }
     }
 

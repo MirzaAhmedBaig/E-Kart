@@ -17,6 +17,14 @@
                 android:icon="@drawable/ic_refer"
                 android:title="@string/referral"/>
         <item
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="@string/feedback"/>
+        <item
+                android:id="@+id/nav_contacts"
+                android:icon="@drawable/ic_contact_mail"
+                android:title="@string/contact"/>
+        <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share"/>
@@ -24,5 +32,6 @@
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_exit"
                 android:title="@string/sign_out"/>
+
     </group>
 </menu>

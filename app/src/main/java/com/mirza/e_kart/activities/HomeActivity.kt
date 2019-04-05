@@ -40,7 +40,7 @@ import retrofit2.Response
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, RefreshProductListener {
 
     private val TAG = HomeActivity::class.java.simpleName
-    val titles = listOf("Home", "My Orders", "Referral")
+    val titles = listOf("Home", "My Orders", "Referral", "Feedback", "Contacts")
     private val fromStrings = arrayOf("productName")
     var menuIndex = 0
     private var productList: ProductList? = null
@@ -119,6 +119,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_referral -> {
                 moveToReferralPage()
+            }
+            R.id.nav_feedback -> {
+                moveToFeedback()
+            }
+            R.id.nav_contacts -> {
+                moveToContactsPage()
             }
             R.id.nav_share -> {
                 shareApp()

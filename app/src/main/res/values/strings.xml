@@ -18,14 +18,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="my_name">Mirza Ahmed Baig</string>
-    <string name="my_email">mirzaahmed65@gmail.com</string>
+    <string name="my_email">na490119@gmail.com</string>
     <string name="home">Home</string>
     <string name="my_orders">My Orders</string>
     <string name="referral">Referral</string>
     <string name="share">Share</string>
     <string name="sign_out">Sign out</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="product_name">NOKIA 5.1 PLUS</string>
     <string name="price">\u20B914,999</string>
     <string name="intrest_text">Get this item at 2% interest rate</string>
@@ -78,4 +77,15 @@
     <string name="finance_details">Finance Details</string>
     <string name="take_image_of_cheque_optional">Take image of cheque(Optional)</string>
     <string name="processing_fees">Processing Fees :</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact">Contacts</string>
+    <string name="feedback">Feedback</string>
+    <string name="contact_us">Contact us</string>
+    <string name="contact_message">Drop your emails or call us on follwing</string>
+    <string name="my_number">+91 7020603057</string>
+    <string name="feedback_title">Your feedback here</string>
+    <string name="subject">Subject</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="your_message">Your message here</string>
 </resources>

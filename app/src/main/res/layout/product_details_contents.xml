@@ -99,7 +99,7 @@
                     android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="8dp"/>
 
-            <TextView
+            <WebView
                     android:id="@+id/product_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -114,37 +114,6 @@
                     android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
-            <View
-                    android:id="@+id/v1"
-                    android:layout_width="0dp"
-                    android:layout_height="0.8dp"
-                    android:background="@color/hint_color"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/product_description"/>
-
-
-            <TextView
-                    android:id="@+id/product_details_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/avenir_next_medium"
-                    tools:text="Product Details"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/product_sub_title_text"
-                    android:visibility="visible"
-                    android:layout_marginStart="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/v1"
-                    android:layout_marginTop="16dp"/>
-            <WebView
-                    android:id="@+id/product_details"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/product_details_text"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-                    android:layout_marginBottom="50dp" app:layout_constraintBottom_toBottomOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 

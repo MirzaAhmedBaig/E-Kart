@@ -3,11 +3,12 @@
 
     <item>
         <shape android:shape="rectangle">
-            <gradient
+            <!--<gradient
                 android:angle="225"
                 android:endColor="@color/app_background_end"
                 android:startColor="@color/app_background_start" />
-            <padding android:bottom="1dp" />
+            <padding android:bottom="1dp" />-->
+            <solid android:color="@color/white"/>
         </shape>
     </item>
 
@@ -16,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:src="@mipmap/e_kart" />
+            android:src="@mipmap/ic_launcher_foreground" />
     </item>
 
 </layer-list>
