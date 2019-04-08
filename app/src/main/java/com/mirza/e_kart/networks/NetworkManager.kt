@@ -41,6 +41,11 @@ interface NetworkManager {
     fun getProductImages(@Header("Authorization") bearer: String, @Field("id") id: Int): Call<ProductImages>
 
     @FormUrlEncoded
+    @POST(MConfig.BRANDS)
+    fun getBrands(@Header("Authorization") bearer: String, @Field("id") id: Int): Call<BrandsModel>
+
+
+    @FormUrlEncoded
     @POST(MConfig.REFERRAL_LIST)
     fun getReferrals(@Header("Authorization") bearer: String, @Field("id") id: Int): Call<ReferralModel>
 
@@ -73,7 +78,9 @@ interface NetworkManager {
         @Part("family_member_number") familyNumber: RequestBody,
         @Part("guarantor_name") guarantorName: RequestBody,
         @Part("guarantor_mobile_number") guarantorMobile: RequestBody,
+        @Part("down_payment") downPayment: RequestBody,
         @Part("reference_code") referenceCode: RequestBody,
+        @Part("color") color: RequestBody?,
         @Part aadhaarFront: MultipartBody.Part,
         @Part aadhaarBack: MultipartBody.Part,
         @Part pan: MultipartBody.Part,

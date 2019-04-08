@@ -14,7 +14,6 @@ import com.mirza.e_kart.extensions.isEmailValid
 import com.mirza.e_kart.extensions.moveToHomePage
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.FeedbackModel
-import com.mirza.e_kart.networks.models.ReferralModel
 import com.mirza.e_kart.preferences.AppPreferences
 import hideLoadingAlert
 import isNetworkAvailable
@@ -39,6 +38,7 @@ class FeedbackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         u_email.setText(AppPreferences(context!!).getEmail())
+        u_email.setSelection(u_email.text.length)
         setListeners()
     }
 

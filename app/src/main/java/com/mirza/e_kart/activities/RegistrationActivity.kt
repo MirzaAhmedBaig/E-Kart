@@ -175,7 +175,7 @@ class RegistrationActivity : AppCompatActivity() {
         appPreferences.setUser(response.user)
         appPreferences.setLoggedIn(true)
         appPreferences.setEmail(response.user.email)
-        appPreferences.setReferId(response.user.reference_code)
+        appPreferences.setReferId(response.user.referal_id)
         appPreferences.setUserName(response.user.first_name + " " + response.user.last_name)
         appPreferences.setJWTToken(response.access_token)
         startActivity(Intent(this, HomeActivity::class.java))

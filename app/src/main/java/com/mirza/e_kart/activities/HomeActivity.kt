@@ -308,9 +308,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     suggestionList.clear()
                     productList?.product?.forEach {
                         suggestionList.add(it.name)
-                        it.brand_name?.let {
-                            brandList.add(it)
-                        }
                     }
                     loadProducts()
                 } else {

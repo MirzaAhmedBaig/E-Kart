@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
                                     Intent(context, SearchResultActivity::class.java).apply {
                                         putExtra("productList", results)
                                         putExtra("isCat", true)
-                                        putExtra("cat", categories[position].name)
+                                        putExtra("cat", categories[position])
                                     }.also {
                                         startActivity(it)
                                     }

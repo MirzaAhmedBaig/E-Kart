@@ -5,13 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.ProductCarouselAdapter
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.extensions.hideLoadingAlert
-import com.mirza.e_kart.extensions.isNetworkAvailable
-import com.mirza.e_kart.extensions.showLoadingAlert
-import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.listeners.ImageSliderListener
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.ProductImages
@@ -36,6 +35,7 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
     }
 
     private var productId = 0
+    private var productColor: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,15 +57,17 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
 
     private fun setListeners() {
         back_button.setOnClickListener {
-            finish()
+            onBackPressed()
         }
         buy_now.setOnClickListener {
-            Intent(this, BuyingActivity::class.java).apply {
-                putExtra("id", productId)
-            }.also {
-                startActivity(it)
-
-
+            if (validateColor()) {
+                Intent(this, BuyingActivity::class.java).apply {
+                    putExtra("id", productId)
+                    putExtra("color", productColor)
+                    putExtra("productDetails", productDetails)
+                }.also {
+                    startActivity(it)
+                }
             }
         }
     }
@@ -88,6 +90,35 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
         productDetails.description.let {
             product_description.loadData(productDetails.description, "text/html", "UTF-8")
         }
+
+        if (productDetails.colors == null) {
+            empolyment_type.visibility = View.GONE
+        } else {
+            productDetails.colors?.let {
+                val str = "Select Color,$it"
+                setBrandSpinner(str.split(","))
+            }
+        }
+    }
+
+    private fun setBrandSpinner(colors: List<String>) {
+        val dataAdapter = ArrayAdapter<String>(
+            this,
+            R.layout.custom_spinner_item, ArrayList<String>().apply {
+                addAll(colors)
+            }
+        )
+        dataAdapter.setDropDownViewResource(R.layout.custom_spinner_item)
+        empolyment_type.adapter = dataAdapter
+        empolyment_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                Log.d(TAG, "onItemSelected called : $position ")
+                productColor = colors[position]
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
     }
 
     private fun setGalleryAdapter(list: ArrayList<String>) {
@@ -100,6 +131,16 @@ class ProductDetailsActivity : AppCompatActivity(), ImageSliderListener {
         image_gallery.visibility = View.VISIBLE
         dots_indicator_gallery.visibility = View.VISIBLE
         buy_now.visibility = View.GONE
+    }
+
+    private fun validateColor(): Boolean {
+        if (productDetails.colors == null)
+            return true
+        if (empolyment_type.selectedItemPosition == 0) {
+            showAlert("Please select product color")
+            return false
+        }
+        return true
     }
 
 

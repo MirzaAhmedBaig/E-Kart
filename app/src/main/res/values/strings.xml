@@ -28,7 +28,7 @@
     <string name="product_name">NOKIA 5.1 PLUS</string>
     <string name="price">\u20B914,999</string>
     <string name="intrest_text">Get this item at 2% interest rate</string>
-    <string name="short_description">Short description</string>
+    <string name="short_description">Description</string>
     <string name="yes">OK</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -88,4 +88,5 @@
     <string name="subject">Subject</string>
     <string name="send_feedback">Send Feedback</string>
     <string name="your_message">Your message here</string>
+    <string name="down_payment">Down Payment</string>
 </resources>

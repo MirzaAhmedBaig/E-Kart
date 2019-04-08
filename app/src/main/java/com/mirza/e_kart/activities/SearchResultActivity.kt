@@ -12,11 +12,22 @@ import android.widget.TextView
 import com.mirza.e_kart.R
 import com.mirza.e_kart.adapters.ProductListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
-import com.mirza.e_kart.extensions.brandList
+import com.mirza.e_kart.customdialogs.CustomAlertDialog
+import com.mirza.e_kart.extensions.hideLoadingAlert
+import com.mirza.e_kart.extensions.isNetworkAvailable
+import com.mirza.e_kart.extensions.showLoadingAlert
+import com.mirza.e_kart.extensions.showToast
+import com.mirza.e_kart.networks.ClientAPI
+import com.mirza.e_kart.networks.models.BrandsModel
+import com.mirza.e_kart.networks.models.Category
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
+import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_search_result.*
 import kotlinx.android.synthetic.main.search_result_contents.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class SearchResultActivity : AppCompatActivity() {
@@ -34,17 +45,23 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
     private val category by lazy {
-        intent.getStringExtra("cat")
+        categoryModel?.name
     }
+
+    private val categoryModel by lazy {
+        intent.getParcelableExtra("cat") as Category?
+    }
+
+    private var brandList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_result)
         if (isCategory) {
-            bar_title.text = category.capitalize()
+            bar_title.text = category!!.capitalize()
             brand_filter.visibility = View.VISIBLE
             imageView3.visibility = View.VISIBLE
-            setBrandSpinner(brandList.distinct())
+            getBrands()
         } else {
             brand_filter.visibility = View.GONE
             imageView3.visibility = View.GONE
@@ -57,12 +74,16 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
 
-    private fun setBrandSpinner(brands: List<String>) {
+    private fun setBrandSpinner(brands: List<String>?) {
+        brandList = ArrayList<String>().apply {
+            add("Select Brand")
+            add("All Brands")
+            if (brands != null)
+                addAll(brands)
+        }
         val dataAdapter = ArrayAdapter<String>(
             this,
-            R.layout.custom_spinner_item, ArrayList<String>().apply {
-                addAll(brands)
-            }
+            R.layout.custom_spinner_item, brandList
         )
         dataAdapter.setDropDownViewResource(R.layout.custom_spinner_item)
         brand_filter.adapter = dataAdapter
@@ -130,5 +151,46 @@ class SearchResultActivity : AppCompatActivity() {
         productList?.filter { it.brand_name == brandList[position] }?.let {
             setProductList(it)
         }
+    }
+
+    private fun getBrands() {
+        if (!isNetworkAvailable()) {
+            val dialog = CustomAlertDialog().apply {
+                setMessage("Please check your internet.")
+                setIcon(R.drawable.ic_warning)
+                setSingleButton(true)
+            }
+            dialog.show(supportFragmentManager, "select_day_alert")
+            setBrandSpinner(null)
+            return
+        }
+        showLoadingAlert()
+        val call = ClientAPI.clientAPI.getBrands("Bearer " + AppPreferences(this).getJWTToken(), categoryModel!!.id)
+        Log.d(TAG, "Request URL : ${call.request().url()}")
+        call.enqueue(object : Callback<BrandsModel> {
+            override fun onResponse(call: Call<BrandsModel>, response: Response<BrandsModel>) {
+                hideLoadingAlert()
+                if (response.isSuccessful) {
+                    val productResponse = response.body()
+                    if (productResponse == null) {
+                        showToast("ServerError")
+                        return
+                    }
+                    setBrandSpinner(productResponse.brands)
+                } else {
+                    setBrandSpinner(null)
+                    showToast("Internal server error, please try again")
+                }
+
+                Log.d(TAG, "Response Code : ${response.code()}")
+            }
+
+            override fun onFailure(call: Call<BrandsModel>, t: Throwable) {
+                hideLoadingAlert()
+                setBrandSpinner(null)
+                t.printStackTrace()
+                showToast("Network Error!")
+            }
+        })
     }
 }

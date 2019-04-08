@@ -3,6 +3,7 @@ package com.mirza.e_kart.preferences
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.Gson
 import com.mirza.e_kart.networks.models.UserDetails
 
@@ -60,7 +61,9 @@ class AppPreferences(context: Context) {
     }
 
     fun getJWTToken(): String? {
-        return _sharedPrefs.getString(JWT_TOKEN, null)
+        val token = _sharedPrefs.getString(JWT_TOKEN, null)
+        Log.d(TAG, "Token : $token")
+        return token
     }
 
     fun getReferId(): String? {

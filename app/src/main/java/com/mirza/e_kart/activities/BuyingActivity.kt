@@ -17,7 +17,9 @@ import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -33,6 +35,7 @@ import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.listeners.CustomDialogListener
 import com.mirza.e_kart.listeners.SelfieDialogListener
 import com.mirza.e_kart.networks.ClientAPI
+import com.mirza.e_kart.networks.models.ProductModel
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_buying.*
 import kotlinx.android.synthetic.main.content_buy_activity.*
@@ -76,6 +79,22 @@ class BuyingActivity : AppCompatActivity() {
 
     private val productId by lazy {
         intent.getIntExtra("id", -1)
+    }
+
+    private val productColor by lazy {
+        intent.getStringExtra("color")
+    }
+
+    private val productDetails by lazy {
+        intent.getParcelableExtra("productDetails") as ProductModel
+    }
+
+    private val minDownPayment: Int by lazy {
+        Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat() * 0.3f)
+    }
+
+    private val maxDownPayment: Int by lazy {
+        Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat() * 0.7f)
     }
 
     private val datePickerListener by lazy {
@@ -168,6 +187,50 @@ class BuyingActivity : AppCompatActivity() {
             }
             permanent_address.isEnabled = !isChecked
         }
+
+        current_address.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (address_checkbox.isChecked) {
+                    permanent_address.setText(s)
+                }
+            }
+        })
+        referral_code.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (referral_code.text.contains(" ")) {
+                    referral_code.setText(s?.trim())
+                    referral_code.setSelection(referral_code.text.length)
+                }
+            }
+        })
+
+        u_pan.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (u_pan.text.contains(" ")) {
+                    u_pan.setText(s?.trim())
+                    u_pan.setSelection(u_pan.text.length)
+                }
+            }
+        })
 
         datePickerDialog.setOnDismissListener {
             if (dob.text.isNotBlank()) {
@@ -447,6 +510,20 @@ class BuyingActivity : AppCompatActivity() {
             }
         }
 
+        Log.d(TAG, "Min : $minDownPayment Max $maxDownPayment")
+        if (down_payment.text.isBlank() || down_payment.text.toString().toInt() !in (minDownPayment..maxDownPayment)) {
+            down_payment.requestFocus()
+            down_payment.error = "Enter valid input"
+            showAlert("Minimum down payment for this product is : $minDownPayment\nMaximum down payment for this product is : $maxDownPayment")
+            return false
+        }
+
+        if (referral_code.text.trim().isNotEmpty() && referral_code.text.length != 6) {
+            referral_code.requestFocus()
+            referral_code.error = "Enter valid referral code"
+            return false
+        }
+
         if (documentsPathList[0] == null || documentsPathList[1] == null) {
             showAlert("Please take Aaadhaar front and back image")
             return false
@@ -598,7 +675,6 @@ class BuyingActivity : AppCompatActivity() {
             showToast("GlobalScope.async")
             compressFiles(this@BuyingActivity, documentsPathList) {
                 runOnUiThread {
-                    showToast("Compression done")
                     startSendingRequest()
                 }
             }
@@ -627,6 +703,11 @@ class BuyingActivity : AppCompatActivity() {
         val g_name = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_name.text.toString())
         val g_number = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_number.text.toString())
         val r_code = RequestBody.create(okhttp3.MultipartBody.FORM, referral_code.text.toString())
+        val d_payment = RequestBody.create(okhttp3.MultipartBody.FORM, down_payment.text.toString())
+        val product_color = if (productColor != null) RequestBody.create(
+            okhttp3.MultipartBody.FORM,
+            productColor
+        ) else null
 
         val a_f_image = File(documentsPathList[0])
         val a_b_image = File(documentsPathList[1])
@@ -703,7 +784,9 @@ class BuyingActivity : AppCompatActivity() {
             f_number,
             g_name,
             g_number,
+            d_payment,
             r_code,
+            product_color,
             a_front,
             a_back,
             pan_front,
