@@ -24,26 +24,6 @@ class Compressor(context: Context) {
         destinationDirectoryPath = context.cacheDir.path + File.separator + "images"
     }
 
-    fun setMaxWidth(maxWidth: Int): Compressor {
-        this.maxWidth = maxWidth
-        return this
-    }
-
-    fun setMaxHeight(maxHeight: Int): Compressor {
-        this.maxHeight = maxHeight
-        return this
-    }
-
-    fun setCompressFormat(compressFormat: Bitmap.CompressFormat): Compressor {
-        this.compressFormat = compressFormat
-        return this
-    }
-
-    fun setQuality(quality: Int): Compressor {
-        this.quality = quality
-        return this
-    }
-
     fun setDestinationDirectoryPath(destinationDirectoryPath: String): Compressor {
         this.destinationDirectoryPath = destinationDirectoryPath
         return this
@@ -56,11 +36,6 @@ class Compressor(context: Context) {
             imageFile, maxWidth, maxHeight, compressFormat, quality,
             destinationDirectoryPath + File.separator + compressedFileName
         )
-    }
-
-    @Throws(IOException::class)
-    fun compressToBitmap(imageFile: File): Bitmap {
-        return ImageUtil.decodeSampledBitmapFromFile(imageFile, maxWidth, maxHeight)
     }
 
 }

@@ -108,28 +108,14 @@ class CustomAlertDialog : android.support.v4.app.DialogFragment() {
         this.msg = msg
     }
 
-    fun setBlurBackground(bitmap: Bitmap) {
-        this.bitmap = bitmap
-    }
 
     fun setIcon(resourceId: Int) {
         this.resourceId = resourceId
     }
 
-    fun setPositiveButtonTitle(title: String) {
-        positiveButtonText = title
-    }
-
-    fun setNegativeButtonTitle(title: String) {
-        negativeButtonText = title
-    }
 
     fun setSingleButton(value: Boolean) {
         isSingleButton = value
-    }
-
-    fun setNoButton(value: Boolean) {
-        noButtons = value
     }
 
     override fun show(manager: FragmentManager?, tag: String?) {

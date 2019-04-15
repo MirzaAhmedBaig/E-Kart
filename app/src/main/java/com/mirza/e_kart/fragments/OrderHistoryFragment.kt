@@ -58,7 +58,6 @@ class OrderHistoryFragment : Fragment() {
             addOnItemTouchListener(
                 RecyclerItemClickListener(
                     context,
-                    this,
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")

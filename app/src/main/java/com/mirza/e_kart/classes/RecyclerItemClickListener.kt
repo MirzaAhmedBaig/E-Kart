@@ -13,7 +13,10 @@ import android.view.View
  * mirza@avantari.org
  */
 
-class RecyclerItemClickListener(context: Context, recyclerView: RecyclerView, listener: OnItemClickListener) :
+class RecyclerItemClickListener(
+    context: Context,
+    listener: OnItemClickListener
+) :
     RecyclerView.OnItemTouchListener {
     override fun onTouchEvent(p0: RecyclerView, p1: MotionEvent) {
 

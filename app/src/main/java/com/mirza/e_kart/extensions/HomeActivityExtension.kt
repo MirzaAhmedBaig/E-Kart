@@ -6,6 +6,7 @@ import com.mirza.e_kart.activities.HomeActivity
 import com.mirza.e_kart.fragments.*
 import com.mirza.e_kart.networks.models.ProductList
 import com.mirza.e_kart.networks.models.ProductModel
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 
@@ -21,6 +22,8 @@ fun HomeActivity.moveToHomePage() {
         return
     supportFragmentManager.beginTransaction().replace(R.id.main_layout, homeFragment!!, "home_fragment").commit()
     menuIndex = 0
+    toolbar.title = titles[menuIndex]
+    nav_view.menu.getItem(menuIndex).isChecked = true
     toolbar.title = titles[menuIndex]
 }
 

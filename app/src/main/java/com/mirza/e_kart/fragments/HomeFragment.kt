@@ -14,7 +14,6 @@ import com.mirza.e_kart.activities.SearchResultActivity
 import com.mirza.e_kart.adapters.CategoryAdapter
 import com.mirza.e_kart.adapters.ProductListAdapter
 import com.mirza.e_kart.classes.RecyclerItemClickListener
-import com.mirza.e_kart.listeners.CategoryListener
 import com.mirza.e_kart.listeners.RefreshProductListener
 import com.mirza.e_kart.networks.models.CategoriesModel
 import com.mirza.e_kart.networks.models.Category
@@ -31,7 +30,6 @@ class HomeFragment : Fragment() {
 
     private val TAG = HomeFragment::class.java.simpleName
     private var refreshProductListener: RefreshProductListener? = null
-    private var categoryListener: CategoryListener? = null
     private val productAdapter by lazy {
         product_list.adapter as ProductListAdapter
     }
@@ -84,7 +82,6 @@ class HomeFragment : Fragment() {
             addOnItemTouchListener(
                 RecyclerItemClickListener(
                     context,
-                    this,
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")
@@ -108,7 +105,6 @@ class HomeFragment : Fragment() {
             addOnItemTouchListener(
                 RecyclerItemClickListener(
                     context,
-                    this,
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             Log.d(TAG, "Product at $position")

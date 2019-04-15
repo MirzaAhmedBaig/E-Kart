@@ -18,11 +18,8 @@
     <dimen name="button_height">50dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_120">120dp</dimen>
-    <dimen name="dp_29">29dp</dimen>
-    <dimen name="dp_9">9dp</dimen>
     <dimen name="sp_19">19sp</dimen>
     <dimen name="dp_32">32dp</dimen>
-    <dimen name="dp_50">50dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>

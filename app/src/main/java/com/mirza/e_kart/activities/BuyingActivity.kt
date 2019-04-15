@@ -97,6 +97,10 @@ class BuyingActivity : AppCompatActivity() {
         Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat() * 0.7f)
     }
 
+    private val totalPayment: Int by lazy {
+        Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat())
+    }
+
     private val datePickerListener by lazy {
         DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -179,7 +183,7 @@ class BuyingActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
-        address_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        address_checkbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 permanent_address.setText(current_address.text.toString())
             } else {
@@ -214,6 +218,24 @@ class BuyingActivity : AppCompatActivity() {
                     referral_code.setText(s?.trim())
                     referral_code.setSelection(referral_code.text.length)
                 }
+            }
+        })
+
+        down_payment.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (down_payment.text.isBlank())
+                    return
+                val value = down_payment.text.toString().toInt()
+                if (value in (minDownPayment..maxDownPayment))
+                    emi_text.text = "EMI will be \u20B9${((totalPayment - value) / 6)}/- for 6 months"
+                else
+                    down_payment.error = "Value should be in between $minDownPayment to $maxDownPayment"
             }
         })
 

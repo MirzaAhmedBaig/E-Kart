@@ -8,15 +8,8 @@ import com.google.gson.Gson
 import com.mirza.e_kart.networks.models.UserDetails
 
 
-/**
- * Created by bala on 01-11-2017.
- */
 class AppPreferences(context: Context) {
-    companion object {
-        const val SESSION_NOT_YET_DONE = 1
-        const val SESSION_DONE = 2
-        const val LOCK_REMINDER = 3
-    }
+
 
     private var _sharedPrefs: SharedPreferences
     private var _prefsEditor: SharedPreferences.Editor

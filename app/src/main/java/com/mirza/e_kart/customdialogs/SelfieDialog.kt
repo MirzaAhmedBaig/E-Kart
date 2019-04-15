@@ -1,6 +1,5 @@
 package com.mirza.e_kart.customdialogs
 
-import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -54,9 +53,6 @@ class SelfieDialog : android.support.v4.app.DialogFragment() {
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
-    }
 
     fun setListener(selfieDialogListener: SelfieDialogListener) {
         this.selfieDialogListener = selfieDialogListener

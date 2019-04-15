@@ -111,7 +111,6 @@ class SearchResultActivity : AppCompatActivity() {
             addOnItemTouchListener(
                 com.mirza.e_kart.classes.RecyclerItemClickListener(
                     context,
-                    this,
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             android.util.Log.d(TAG, "Product at $position")

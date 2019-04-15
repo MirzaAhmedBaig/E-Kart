@@ -8,7 +8,7 @@
           android:paddingBottom="10dp"
           android:paddingStart="15dp"
           android:paddingEnd="15dp"
-          android:textSize="@dimen/text_size"
+          android:textSize="16sp"
           android:textColor="@color/text_color_black"
           android:gravity="start"
           android:fontFamily="@font/avenir_next_regular"

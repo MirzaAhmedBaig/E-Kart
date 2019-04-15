@@ -2,7 +2,6 @@ package com.mirza.e_kart.extensions
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
 import com.mirza.e_kart.classes.Compressor
 import java.io.File
 import java.io.FileOutputStream
@@ -17,9 +16,6 @@ import java.util.*
  * mirza@avantari.org
  */
 
-fun Any?.toStringWithGSON(): String {
-    return Gson().toJson(this)
-}
 
 
 fun compressFiles(context: Context, paths: Array<String?>, onComplete: () -> Unit) {

@@ -76,21 +76,3 @@ fun Fragment.getMatchingItemsByCategory(productList: ArrayList<ProductModel>?, i
         null
     }
 }
-
-fun Fragment.getMatchingItemsByBrand(productList: ArrayList<ProductModel>?, id: Int): ProductList? {
-    val list = productList?.filter { it.brand_id == id }
-    return if (list != null && list.isNotEmpty()) {
-        ProductList(ArrayList<ProductModel>().apply {
-            addAll(list)
-        })
-    } else {
-        null
-    }
-}
-
-
-internal inline fun Fragment.runOnUiThread(crossinline runnable: () -> Unit) {
-    activity?.runOnUiThread {
-        runnable.invoke()
-    }
-}

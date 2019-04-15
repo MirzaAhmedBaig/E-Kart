@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.View
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
-import com.mirza.e_kart.customdialogs.ForgotPasswordDialog
 import com.mirza.e_kart.extensions.*
 import com.mirza.e_kart.networks.ClientAPI
 import com.mirza.e_kart.networks.models.LoginModel
@@ -54,9 +53,6 @@ class LoginActivity : AppCompatActivity() {
                 performAuthentication()
             }
         }
-        forget_password.setOnClickListener {
-            showForgotPassword()
-        }
     }
 
     private fun performValidation(): Boolean {
@@ -93,13 +89,6 @@ class LoginActivity : AppCompatActivity() {
         register_text.text = content
         register_text.movementMethod = LinkMovementMethod.getInstance()
     }
-
-
-    private fun showForgotPassword() {
-        val forgotPasswordDialog = ForgotPasswordDialog()
-        forgotPasswordDialog.show(supportFragmentManager, "hi_how")
-    }
-
 
     private fun completedLogin(response: LoginResponse) {
         appPreferences.setUser(response.user)

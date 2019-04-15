@@ -68,9 +68,7 @@ class LoadingView : View {
             setEvaluator(android.animation.FloatEvaluator())
             addUpdateListener { valueAnimator ->
                 val factor = valueAnimator.animatedValue as Float
-//                runOnUiThread {
                 invalidate()
-//                }
                 endAngleL = 181 * factor
                 endAngleR = -181 * factor
                 if (endAngleL < 0.5) {

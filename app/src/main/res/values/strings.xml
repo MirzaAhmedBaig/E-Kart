@@ -7,8 +7,6 @@
     <string name="forget_password">Forgot Password?</string>
     <string name="login">Login</string>
     <string name="email_sent">Password reset link has been sent to you email id.</string>
-    <string name="enter_your_email">Enter Your Email</string>
-    <string name="done">Done</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="otp">OTP</string>
     <string name="register">Register</string>
@@ -78,7 +76,6 @@
     <string name="take_image_of_cheque_optional">Take image of cheque(Optional)</string>
     <string name="processing_fees">Processing Fees :</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contact">Contacts</string>
     <string name="feedback">Feedback</string>
     <string name="contact_us">Contact us</string>
@@ -86,7 +83,6 @@
     <string name="my_number">+91 7020603057</string>
     <string name="feedback_title">Your feedback here</string>
     <string name="subject">Subject</string>
-    <string name="send_feedback">Send Feedback</string>
     <string name="your_message">Your message here</string>
     <string name="down_payment">Down Payment</string>
 </resources>

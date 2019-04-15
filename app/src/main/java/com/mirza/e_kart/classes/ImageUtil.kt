@@ -69,7 +69,7 @@ internal object ImageUtil {
         options.inJustDecodeBounds = false
         options.inMutable = true
 
-        var scaledBitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options)
+        val scaledBitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options)
 
         //check the rotation of the image and display it properly
         val exif = ExifInterface(imageFile.absolutePath)
@@ -80,7 +80,7 @@ internal object ImageUtil {
             3 -> matrix.postRotate(180f)
             8 -> matrix.postRotate(270f)
         }
-        var scaledBitmapTwo =
+        val scaledBitmapTwo =
             Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
 
         //add date on it
