@@ -2,21 +2,19 @@ package com.mirza.e_kart.extensions
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
-import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
+import com.mirza.e_kart.BuildConfig
 import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.listeners.CustomDialogListener
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
+import android.graphics.Bitmap.CompressFormat
 
 
 /**
@@ -83,38 +81,29 @@ fun AppCompatActivity.showAlert(message: String, setIcon: Boolean = true, onDone
 
 
 fun AppCompatActivity.shareApp() {
-    val shareIntent = Intent(Intent.ACTION_SEND)
-    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.nfpl_share)
-    val path =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/Share.png"
-
-    val out: OutputStream
-    val file = File(path)
     try {
-        out = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-        out.flush()
-        out.close()
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.nfpl_share)
+        val outputFile = File(cacheDir, "nfpl.jpeg")
+        val outPutStream = FileOutputStream(outputFile)
+        bitmap.compress(CompressFormat.JPEG, 100, outPutStream)
+        outPutStream.flush()
+        outPutStream.close()
+        outputFile.setReadable(true, false)
+
+
+        val bmpUri = FileProvider.getUriForFile(
+            this,
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            outputFile
+        )
+        val shareIntent = Intent(android.content.Intent.ACTION_SEND)
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
+        shareIntent.type = "image/jpeg"
+        startActivity(shareIntent)
     } catch (e: Exception) {
         e.printStackTrace()
+        Toast.makeText(this, "error", Toast.LENGTH_LONG).show()
     }
 
-    Log.d(TAG, "File exiasst : ${file.exists()}")
-
-    val bmpUri = FileProvider.getUriForFile(
-        this,
-        "com.ten40infotech.nfpl.fileprovider",
-        file
-    )
-    shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
-    shareIntent.putExtra(
-        Intent.EXTRA_TEXT,
-        "Hey please check this application https://play.google.com/store/apps/details?id=$packageName"
-    )
-    shareIntent.type = "image/png"
-    startActivity(Intent.createChooser(shareIntent, "Share with"))
 
 }
-
-
