@@ -90,11 +90,11 @@ class BuyingActivity : AppCompatActivity() {
     }
 
     private val minDownPayment: Int by lazy {
-        Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat() * 0.3f)
+        Math.round((productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat()) * 0.3f)
     }
 
     private val maxDownPayment: Int by lazy {
-        Math.round(productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat() * 0.7f)
+        Math.round((productDetails.processing_fees.toFloat() + ((productDetails.price.toFloat() / 100f) * productDetails.interest.toFloat()) + productDetails.price.toFloat()) * 0.7f)
     }
 
     private val totalPayment: Int by lazy {

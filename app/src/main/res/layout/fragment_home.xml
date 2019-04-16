@@ -15,7 +15,7 @@
                 tools:listitem="@layout/category_item"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"/>
+        />
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_list"
                 android:layout_width="0dp"
