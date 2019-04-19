@@ -149,7 +149,7 @@ class BuyingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.mirza.e_kart.R.layout.activity_buying)
+        setContentView(R.layout.activity_buying)
         init()
         setListeners()
         initSpinner(gender, genderList, Constants.GENDER)
@@ -403,7 +403,7 @@ class BuyingActivity : AppCompatActivity() {
 
 
     private fun setDateTodobET() {
-        val myFormat = "dd/MM/yy"
+        val myFormat = "dd/MM/yyyy"
         val sdf = SimpleDateFormat(myFormat, Locale.US)
         dob.text = sdf.format(myCalendar.time)
     }
@@ -551,10 +551,10 @@ class BuyingActivity : AppCompatActivity() {
             return false
         }
 
-        if (documentsPathList[2] == null) {
+        /*if (documentsPathList[2] == null) {
             showAlert("Please take Pan Card image")
             return false
-        }
+        }*/
 
         if (documentsPathList[4] == null) {
             showAlert("Please take Bank Passbook's front page image")
@@ -727,19 +727,17 @@ class BuyingActivity : AppCompatActivity() {
         val r_code = RequestBody.create(okhttp3.MultipartBody.FORM, referral_code.text.toString())
         val d_payment = RequestBody.create(okhttp3.MultipartBody.FORM, down_payment.text.toString())
         val product_color = if (productColor != null) RequestBody.create(
-            okhttp3.MultipartBody.FORM,
+            MultipartBody.FORM,
             productColor
         ) else null
 
         val a_f_image = File(documentsPathList[0])
         val a_b_image = File(documentsPathList[1])
-        val p_image = File(documentsPathList[2])
         val pass_image = File(documentsPathList[4])
         val s_image = File(documentsPathList[3])
 
         Log.d(TAG, "AdF Image : ${a_f_image.exists()}")
         Log.d(TAG, "AdB Image : ${a_b_image.exists()}")
-        Log.d(TAG, "PAN Image : ${p_image.exists()}")
         Log.d(TAG, "PAss Image : ${pass_image.exists()}")
         Log.d(TAG, "Sel Image : ${s_image.exists()}")
 
@@ -755,11 +753,7 @@ class BuyingActivity : AppCompatActivity() {
             RequestBody.create(MediaType.parse("image/*"), a_b_image)
         )
 
-        val pan_front = MultipartBody.Part.createFormData(
-            "pan_photo",
-            p_image.name,
-            RequestBody.create(MediaType.parse("image/*"), p_image)
-        )
+
         val pass_front = MultipartBody.Part.createFormData(
             "bank_passbook_photo",
             pass_image.name,
@@ -779,6 +773,19 @@ class BuyingActivity : AppCompatActivity() {
                 "cheque_image",
                 c_image.name,
                 RequestBody.create(MediaType.parse("image/*"), c_image)
+            )
+        } else {
+            null
+        }
+
+        val pan_front = if (documentsPathList[2] != null) {
+            val p_image = File(documentsPathList[2])
+            Log.d(TAG, "P Image : ${p_image.exists()}")
+
+            MultipartBody.Part.createFormData(
+                "pan_photo",
+                p_image.name,
+                RequestBody.create(MediaType.parse("image/*"), p_image)
             )
         } else {
             null

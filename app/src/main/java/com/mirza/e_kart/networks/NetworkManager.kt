@@ -83,7 +83,7 @@ interface NetworkManager {
         @Part("color") color: RequestBody?,
         @Part aadhaarFront: MultipartBody.Part,
         @Part aadhaarBack: MultipartBody.Part,
-        @Part pan: MultipartBody.Part,
+        @Part pan: MultipartBody.Part?,
         @Part bank: MultipartBody.Part,
         @Part selfie: MultipartBody.Part,
         @Part cheque_pic: MultipartBody.Part?

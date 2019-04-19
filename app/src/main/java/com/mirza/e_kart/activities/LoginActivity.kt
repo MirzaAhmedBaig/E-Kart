@@ -56,9 +56,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun performValidation(): Boolean {
-        if (!u_email.text.toString().isEmailValid()) {
+        if (!u_email.text.toString().isEmailValid() && !u_email.text.toString().matches(Regex("^[6-9][0-9]{9}$"))) {
             u_email.requestFocus()
-            u_email.error = "Enter valid email"
+            u_email.error = "Enter valid input"
             return false
         }
         if (u_password.text.isBlank()) {

@@ -55,7 +55,7 @@
     <string name="take_image_of_aadhaar_card">Take image of Aadhaar card</string>
     <string name="front_image">Front Image</string>
     <string name="back_image">Back Image</string>
-    <string name="take_image_of_pan_card">Take image of Pan card</string>
+    <string name="take_image_of_pan_card">Take image of Pan card/Driving licence/Voter ID(Optional)</string>
     <string name="take_image_of_passbook">Take image of Bank Passbook\'s front page</string>
     <string name="referece_code">Referral Code if any</string>
     <string name="selfie_message">\"For validation purpose you need to take your selfie so that we can insure your
