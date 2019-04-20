@@ -85,4 +85,5 @@
     <string name="subject">Subject</string>
     <string name="your_message">Your message here</string>
     <string name="down_payment">Down Payment</string>
+    <string name="email_mobile_number">Email/Mobile number</string>
 </resources>

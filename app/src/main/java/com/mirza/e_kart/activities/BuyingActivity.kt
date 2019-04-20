@@ -471,11 +471,11 @@ class BuyingActivity : AppCompatActivity() {
             u_aadhaar.error = "Enter valid Aadhaar number"
             return false
         }
-        if (u_pan.text.isBlank() || u_pan.text.toString().trim().length < 10) {
+        /*if (u_pan.text.isBlank() || u_pan.text.toString().trim().length < 10) {
             u_pan.requestFocus()
             u_pan.error = "Enter valid Pan number"
             return false
-        }
+        }*/
 
         if (empolyment_type.selectedItemPosition == 0) {
             empolyment_error.requestFocus()

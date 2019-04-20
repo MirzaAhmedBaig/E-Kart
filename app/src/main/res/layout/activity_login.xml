@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:fontFamily="@font/avenir_next_regular"
-            android:hint="@string/email"
+            android:hint="@string/email_mobile_number"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:selectAllOnFocus="false"
