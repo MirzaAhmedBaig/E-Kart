@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:fontFamily="@font/avenir_next_regular"
-                android:hint="Pan/Driving Licence/Voter ID number(Optional)"
+                android:hint="@string/pan_driving_licence_voter_id_number_optional"
                 android:selectAllOnFocus="false"
                 android:gravity="start"
                 android:maxLines="1"
