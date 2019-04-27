@@ -305,6 +305,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         return
                     }
                     productList = productResponse
+                    orderListBackup = productResponse
                     suggestionList.clear()
                     productList?.product?.forEach {
                         suggestionList.add(it.name)

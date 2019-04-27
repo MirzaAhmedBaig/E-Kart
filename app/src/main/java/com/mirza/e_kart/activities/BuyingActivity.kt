@@ -833,7 +833,7 @@ class BuyingActivity : AppCompatActivity() {
                         showToast("Please try after sometime")
                         return
                     }
-                    deleteFiles()
+//                    deleteFiles()
                     val dialog = CustomAlertDialog().apply {
                         setMessage("Your request has been successfully submitted, you can check order status in orders history.")
                         setSingleButton(true)

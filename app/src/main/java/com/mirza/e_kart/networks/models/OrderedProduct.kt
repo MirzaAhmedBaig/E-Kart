@@ -12,6 +12,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class OrderedProduct(
     val id: Int,
+    val order_id: String,
+    val product_id: Int,
     val name: String,
     val price: Double,
     val image: String,

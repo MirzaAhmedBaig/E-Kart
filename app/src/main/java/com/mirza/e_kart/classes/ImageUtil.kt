@@ -86,6 +86,10 @@ internal object ImageUtil {
         //add date on it
         val canvas = Canvas(scaledBitmapTwo)
         canvas.drawBitmap(scaledBitmapTwo, 0f, 0f, paint)
+        canvas.drawRect(50f, 0f, paint.measureText(getCurrentTimeString()) + 70f, 70f, Paint().apply {
+            color = Color.BLACK
+            style = Paint.Style.FILL
+        })
         canvas.drawText(getCurrentTimeString(), 50f, 50f, paint)
         return scaledBitmapTwo
     }

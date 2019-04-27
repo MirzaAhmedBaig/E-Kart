@@ -2,6 +2,7 @@ package com.mirza.e_kart.extensions
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.support.v4.content.FileProvider
@@ -14,7 +15,6 @@ import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.listeners.CustomDialogListener
 import java.io.File
 import java.io.FileOutputStream
-import android.graphics.Bitmap.CompressFormat
 
 
 /**
@@ -98,6 +98,10 @@ fun AppCompatActivity.shareApp() {
         )
         val shareIntent = Intent(android.content.Intent.ACTION_SEND)
         shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
+        shareIntent.putExtra(
+            Intent.EXTRA_TEXT,
+            "Hey please check this application https://play.google.com/store/apps/details?id=$packageName"
+        )
         shareIntent.type = "image/jpeg"
         startActivity(shareIntent)
     } catch (e: Exception) {

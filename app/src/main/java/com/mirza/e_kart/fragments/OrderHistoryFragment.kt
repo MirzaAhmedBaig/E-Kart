@@ -67,6 +67,9 @@ class OrderHistoryFragment : Fragment() {
                     })
             )
         }
+        if (list.isNotEmpty()) {
+            no_orders_text.visibility = View.GONE
+        }
     }
 
     private fun startProductDetailsPage(orderDetails: OrderedProduct) {

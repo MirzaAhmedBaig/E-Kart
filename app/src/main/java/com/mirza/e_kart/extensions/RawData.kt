@@ -1,5 +1,7 @@
 package com.mirza.e_kart.extensions
 
+import com.mirza.e_kart.networks.models.ProductList
+
 val genderList = ArrayList<String>().apply {
     add("Gender")
     add("Male")
@@ -33,4 +35,5 @@ val employmentType = ArrayList<String>().apply {
 }
 
 val suggestionList = ArrayList<String>()
+var orderListBackup: ProductList? = null
 

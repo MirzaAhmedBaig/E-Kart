@@ -1,5 +1,6 @@
 package com.mirza.e_kart.activities
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -8,9 +9,11 @@ import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.mirza.e_kart.R
+import com.mirza.e_kart.extensions.orderListBackup
 import com.mirza.e_kart.extensions.timestampToDate
 import com.mirza.e_kart.networks.MConfig
 import com.mirza.e_kart.networks.models.OrderedProduct
+import com.mirza.e_kart.networks.models.ProductModel
 import com.mirza.e_kart.preferences.AppPreferences
 import kotlinx.android.synthetic.main.activity_order_details.*
 import kotlinx.android.synthetic.main.order_details_contents.*
@@ -45,6 +48,25 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun setListeners() {
         back_button.setOnClickListener {
             finish()
+        }
+
+        thumbnail.setOnClickListener {
+            orderListBackup?.product?.let {
+                if (it.isNotEmpty()) {
+                    val data = it.filter { it.id == orderDetails.product_id }
+                    if (data.isNotEmpty()) {
+                        startProductDetailsPage(data.first())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startProductDetailsPage(productDetails: ProductModel) {
+        Intent(this, ProductDetailsActivity::class.java).apply {
+            putExtra("productDetails", productDetails)
+        }.also {
+            startActivity(it)
         }
     }
 
