@@ -160,8 +160,8 @@ class BuyingActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        u_pan.filters = arrayOf<InputFilter>(InputFilter.AllCaps(), InputFilter.LengthFilter(10))
-        referral_code.filters = arrayOf<InputFilter>(InputFilter.AllCaps(), InputFilter.LengthFilter(6))
+        u_pan.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+        referral_code.filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(6))
     }
 
     private fun setListeners() {
@@ -318,6 +318,18 @@ class BuyingActivity : AppCompatActivity() {
         })
 
         u_name_last.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
+                    Handler().postDelayed({
+                        customer_number.requestFocus()
+                    }, 100)
+                    return true
+                }
+                return false
+            }
+        })
+
+        customer_number.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_FORWARD) {
                     Handler().postDelayed({
@@ -706,26 +718,27 @@ class BuyingActivity : AppCompatActivity() {
 
 
     private fun startSendingRequest() {
-        val c_id = RequestBody.create(okhttp3.MultipartBody.FORM, appPreferences.getUser().id.toString())
-        val p_id = RequestBody.create(okhttp3.MultipartBody.FORM, productId.toString())
-        val dobValue = RequestBody.create(okhttp3.MultipartBody.FORM, myCalendar.time.time.toString())
-        val genderText = RequestBody.create(okhttp3.MultipartBody.FORM, gender.selectedItem.toString())
-        val c_addr = RequestBody.create(okhttp3.MultipartBody.FORM, current_address.text.toString())
-        val p_addr = RequestBody.create(okhttp3.MultipartBody.FORM, permanent_address.text.toString())
-        val pin = RequestBody.create(okhttp3.MultipartBody.FORM, pin_codes.selectedItem.toString())
-        val residence = RequestBody.create(okhttp3.MultipartBody.FORM, residence_type.selectedItem.toString())
-        val aadhaar = RequestBody.create(okhttp3.MultipartBody.FORM, u_aadhaar.text.toString())
-        val pan = RequestBody.create(okhttp3.MultipartBody.FORM, u_pan.text.toString())
-        val empType = RequestBody.create(okhttp3.MultipartBody.FORM, empolyment_type.selectedItem.toString())
-        val compName = RequestBody.create(okhttp3.MultipartBody.FORM, company_name.text.toString())
-        val m_sal = RequestBody.create(okhttp3.MultipartBody.FORM, monthly_income.text.toString())
-        val a_sal = RequestBody.create(okhttp3.MultipartBody.FORM, annual_income.text.toString())
-        val f_name = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_name.text.toString())
-        val f_number = RequestBody.create(okhttp3.MultipartBody.FORM, family_member_number.text.toString())
-        val g_name = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_name.text.toString())
-        val g_number = RequestBody.create(okhttp3.MultipartBody.FORM, guarantor_number.text.toString())
-        val r_code = RequestBody.create(okhttp3.MultipartBody.FORM, referral_code.text.toString())
-        val d_payment = RequestBody.create(okhttp3.MultipartBody.FORM, down_payment.text.toString())
+        val c_id = RequestBody.create(MultipartBody.FORM, appPreferences.getUser().id.toString())
+        val p_id = RequestBody.create(MultipartBody.FORM, productId.toString())
+        val dobValue = RequestBody.create(MultipartBody.FORM, myCalendar.time.time.toString())
+        val genderText = RequestBody.create(MultipartBody.FORM, gender.selectedItem.toString())
+        val c_addr = RequestBody.create(MultipartBody.FORM, current_address.text.toString())
+        val p_addr = RequestBody.create(MultipartBody.FORM, permanent_address.text.toString())
+        val pin = RequestBody.create(MultipartBody.FORM, pin_codes.selectedItem.toString())
+        val residence = RequestBody.create(MultipartBody.FORM, residence_type.selectedItem.toString())
+        val aadhaar = RequestBody.create(MultipartBody.FORM, u_aadhaar.text.toString())
+        val pan = RequestBody.create(MultipartBody.FORM, u_pan.text.toString())
+        val empType = RequestBody.create(MultipartBody.FORM, empolyment_type.selectedItem.toString())
+        val compName = RequestBody.create(MultipartBody.FORM, company_name.text.toString())
+        val m_sal = RequestBody.create(MultipartBody.FORM, monthly_income.text.toString())
+        val a_sal = RequestBody.create(MultipartBody.FORM, annual_income.text.toString())
+        val f_name = RequestBody.create(MultipartBody.FORM, family_member_name.text.toString())
+        val f_number = RequestBody.create(MultipartBody.FORM, family_member_number.text.toString())
+        val g_name = RequestBody.create(MultipartBody.FORM, guarantor_name.text.toString())
+        val g_number = RequestBody.create(MultipartBody.FORM, guarantor_number.text.toString())
+        val c_number = RequestBody.create(MultipartBody.FORM, customer_number.text.toString())
+        val r_code = RequestBody.create(MultipartBody.FORM, referral_code.text.toString())
+        val d_payment = RequestBody.create(MultipartBody.FORM, down_payment.text.toString())
         val product_color = if (productColor != null) RequestBody.create(
             MultipartBody.FORM,
             productColor
@@ -815,6 +828,7 @@ class BuyingActivity : AppCompatActivity() {
             g_number,
             d_payment,
             r_code,
+            c_number,
             product_color,
             a_front,
             a_back,
@@ -833,7 +847,7 @@ class BuyingActivity : AppCompatActivity() {
                         showToast("Please try after sometime")
                         return
                     }
-//                    deleteFiles()
+                    deleteFiles()
                     val dialog = CustomAlertDialog().apply {
                         setMessage("Your request has been successfully submitted, you can check order status in orders history.")
                         setSingleButton(true)
@@ -862,7 +876,7 @@ class BuyingActivity : AppCompatActivity() {
         })
     }
 
-    fun decodeBitmap(context: Context, theUri: Uri, sampleSize: Int): Bitmap {
+    private fun decodeBitmap(context: Context, theUri: Uri, sampleSize: Int): Bitmap {
         val options = BitmapFactory.Options()
         options.inSampleSize = sampleSize
 

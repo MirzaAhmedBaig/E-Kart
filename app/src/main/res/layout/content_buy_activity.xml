@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            xmlns:tools="http://schemas.android.com/tools" android:layout_height="match_parent"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent" android:layout_height="match_parent"
             android:id="@+id/buying_layout"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <android.support.constraint.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
@@ -83,6 +81,34 @@
                 app:layout_constraintEnd_toEndOf="@+id/u_name_last"
                 app:layout_constraintTop_toBottomOf="@+id/u_name_last" android:layout_marginTop="8dp"/>
 
+        <EditText
+                android:id="@+id/customer_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:fontFamily="@font/avenir_next_regular"
+                android:hint="@string/customer_number_if_any"
+                android:selectAllOnFocus="false"
+                android:gravity="start"
+                android:maxLines="1"
+                android:inputType="number"
+                android:textColor="@color/text_color_black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/text_size"
+                android:maxLength="10"
+                android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5" android:layout_marginStart="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/vx1" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"/>
+        <View
+                android:id="@+id/vx15"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="@color/hint_color"
+                app:layout_constraintStart_toStartOf="@+id/customer_number"
+                app:layout_constraintEnd_toEndOf="@+id/customer_number"
+                app:layout_constraintTop_toBottomOf="@+id/customer_number" android:layout_marginTop="8dp"/>
+
         <TextView
                 android:id="@+id/dob"
                 android:layout_width="0dp"
@@ -97,7 +123,7 @@
                 android:textSize="@dimen/text_size"
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toTopOf="@+id/vx" app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintTop_toTopOf="@+id/vx15" app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintEnd_toStartOf="@+id/gender"/>
 
         <View
@@ -283,7 +309,6 @@
                 android:textColor="@color/text_color_black"
                 android:textColorHint="@color/hint_color"
                 android:textSize="@dimen/text_size"
-                android:maxLength="10"
                 android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5" android:layout_marginStart="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/vx5" app:layout_constraintStart_toStartOf="parent"
@@ -609,6 +634,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/referral_code"
                 app:layout_constraintTop_toBottomOf="@+id/referral_code" android:layout_marginTop="8dp"/>
 
+
         <TextView
                 android:id="@+id/documents"
                 android:layout_width="wrap_content"
@@ -745,8 +771,6 @@
                 android:layout_marginTop="8dp"/>
 
 
-
-
         <TextView
                 android:id="@+id/cheque_text"
                 android:layout_width="wrap_content"
@@ -789,7 +813,6 @@
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp" android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="24dp"/>
-
 
 
     </android.support.constraint.ConstraintLayout>

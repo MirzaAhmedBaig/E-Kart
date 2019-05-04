@@ -87,4 +87,5 @@
     <string name="down_payment">Down Payment</string>
     <string name="email_mobile_number">Email/Mobile number</string>
     <string name="pan_driving_licence_voter_id_number_optional">Pan/Driving Licence/Voter ID number(Optional)</string>
+    <string name="customer_number_if_any">Customer Number if any</string>
 </resources>

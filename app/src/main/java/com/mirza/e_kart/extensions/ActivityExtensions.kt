@@ -13,6 +13,7 @@ import com.mirza.e_kart.R
 import com.mirza.e_kart.customdialogs.CustomAlertDialog
 import com.mirza.e_kart.customdialogs.LoadingAlertDialog
 import com.mirza.e_kart.listeners.CustomDialogListener
+import com.mirza.e_kart.preferences.AppPreferences
 import java.io.File
 import java.io.FileOutputStream
 
@@ -96,11 +97,12 @@ fun AppCompatActivity.shareApp() {
             "${BuildConfig.APPLICATION_ID}.fileprovider",
             outputFile
         )
-        val shareIntent = Intent(android.content.Intent.ACTION_SEND)
+        val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
         shareIntent.putExtra(
             Intent.EXTRA_TEXT,
-            "Hey please check this application https://play.google.com/store/apps/details?id=$packageName"
+            "I found a wonderful free online shopping app .They provide goods on credits with easy EMI's. Their delivery system in so fast that they deliver item in 90 minutes on your doorstep. \n" +
+                    "Download the app here and use my referral code :${AppPreferences(this).getReferId()}\nhttps://play.google.com/store/apps/details?id=$packageName"
         )
         shareIntent.type = "image/jpeg"
         startActivity(shareIntent)

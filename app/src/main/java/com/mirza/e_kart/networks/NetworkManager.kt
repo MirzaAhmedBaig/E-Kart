@@ -80,6 +80,7 @@ interface NetworkManager {
         @Part("guarantor_mobile_number") guarantorMobile: RequestBody,
         @Part("down_payment") downPayment: RequestBody,
         @Part("reference_code") referenceCode: RequestBody,
+        @Part("customer_number") customerNumber: RequestBody,
         @Part("color") color: RequestBody?,
         @Part aadhaarFront: MultipartBody.Part,
         @Part aadhaarBack: MultipartBody.Part,
